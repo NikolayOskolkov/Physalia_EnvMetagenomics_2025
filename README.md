@@ -4,8 +4,14 @@
 
 ## Instructors
 
+- Dr. Nikolay Oskolkov, Lund University
+- Dr. Luis Pedro Coelho, Queensland University of Technology
+
+NB: original course material courtesy:
+
 - Dr. Antti Karkman, University of Helsinki
 - Dr. Igor Pessi, Finnish Environment Institute (SYKE)
+
 
 ## Overview
 Metagenomics is widely used for the analysis of microbial communities as it gives access to the genomes of uncultured microorganisms.
@@ -15,7 +21,7 @@ Recent bioinformatic developments now allow the recovery of metagenome-assembled
 
 During this one week course you will learn state-of-the-art bioinformatic approaches to analyse metagenomic data.
 We will cover both read- and assembly-based methods, focusing on the strength of each of these methods depending on the research question.
-We will use data from both short- (e.g. Illumina) and long-read (e.g. Nanopore/PacBio) sequencing platforms, as it improves dramatically MAG assembling and binning compared to short-read-only methods.
+We will use data from both short- (e.g. Illumina) and long-read (e.g. Nanopore / PacBio) sequencing platforms, as it improves dramatically MAG assembling and binning compared to short-read-only methods.
 
 ## Pre-requisites
 We assume some basic awareness of analysis of UNIX and molecular biology.  
