@@ -16,14 +16,13 @@
 |Morning  |Introduction to metagenomics     |[Slides](Lectures/introduction-to-metagenomics.pdf)                              |
 |Afternoon|Setting up the cloud computing   |[Hands-on](exercises.md#setting-up-the-cloud-computing)                          |
 |Afternoon|Getting the raw data             |[Hands-on](exercises.md#getting-the-raw-data)                                    |
-|Afternoon|QC and trimming                  |[Slides](Lectures/QC-and-trimming.pdf) / [Hands-on](exercises.md#qc-and-trimming)|
 
 ## Tuesday - 9 am -1 pm Berlin time
 
 |Time     |Activity                       |Link                                                                                                           |
 |---------|-------------------------------|---------------------------------------------------------------------------------------------------------------|
 |Morning  |Questions from the previous day|[Flinga](https://flinga.fi/s/FFQ5876)                                                                          |
-|Morning  |QC and trimming (cont.)        |[Slides](Lectures/QC-and-trimming.pdf) / [Hands-on](exercises.md#qc-and-trimming)                              |
+|Morning  |QC and trimming                |[Slides](Lectures/QC-and-trimming.pdf) / [Hands-on](exercises.md#qc-and-trimming)                              |
 |Morning  |Metagenome assembly            |[Slides](Lectures/Assembly-and-QC.pdf) / [Hands-on](exercises.md#metagenome-assembly)                          |
 |Afternoon|Assembly QC                    |[Hands-on](exercises.md#assembly-qc)                                                                           |
 |Afternoon|Read-based taxonomic profiling |[Slides](Lectures/read-based-taxonomic-profiling.pdf) / [Hands-on](exercises.md#read-based-taxonomic-profiling)|
