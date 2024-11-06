@@ -8,7 +8,7 @@
 |~ 2 h  |Review article: __Shotgun metagenomics, from sampling to analysis__|[PDF](Articles/nbt.3935.pdf)                        |
 |~ 1 h  |In case needed: __Recap on Unix__                                  |[Hands-on](command-line-basics.md)                  |
 
-## Monday 17.04.23
+## Monday - 9 am -1 pm Berlin time
 
 |Time     |Activity                         |Link                                                                             |
 |---------|---------------------------------|---------------------------------------------------------------------------------|
@@ -18,7 +18,7 @@
 |Afternoon|Getting the raw data             |[Hands-on](exercises.md#getting-the-raw-data)                                    |
 |Afternoon|QC and trimming                  |[Slides](Lectures/QC-and-trimming.pdf) / [Hands-on](exercises.md#qc-and-trimming)|
 
-## Tuesday 18.04.23
+## Tuesday - 9 am -1 pm Berlin time
 
 |Time     |Activity                       |Link                                                                                                           |
 |---------|-------------------------------|---------------------------------------------------------------------------------------------------------------|
@@ -28,7 +28,7 @@
 |Afternoon|Assembly QC                    |[Hands-on](exercises.md#assembly-qc)                                                                           |
 |Afternoon|Read-based taxonomic profiling |[Slides](Lectures/read-based-taxonomic-profiling.pdf) / [Hands-on](exercises.md#read-based-taxonomic-profiling)|
 
-## Wednesday 19.04.23
+## Wednesday - 9 am -1 pm Berlin time
 
 |Time     |Activity|Link|
 |---------|--------|----|
@@ -37,7 +37,7 @@
 |Morning|Genome-resolved metagenomics with anvi'o |[Slides](Lectures/genome-resolved-metagenomics.pdf) / [Hands-on](exercises.md#genome-resolved-metagenomics-with-anvio)|
 |Afternoon|Genome-resolved metagenomics with anvi'o (cont.) |[Slides](Lectures/genome-resolved-metagenomics.pdf) / [Hands-on](exercises.md#genome-resolved-metagenomics-with-anvio)|
 
-## Thursday 20.04.23
+## Thursday - 9 am -1 pm Berlin time
 
 |Time     |Activity|Link|
 |---------|--------|----|
@@ -46,7 +46,7 @@
 |Afternoon|Read-based taxonomic profiling (cont.)            |[Slides](Lectures/read-based-taxonomic-profiling.pdf) / [Hands-on](exercises.md#read-based-taxonomic-profiling)       |
 
 
-## Friday 21.04.23
+## Friday - 9 am -1 pm Berlin time
 
 |Time     |Activity|Link|
 |---------|--------|----|
