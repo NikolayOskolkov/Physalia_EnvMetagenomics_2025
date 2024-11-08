@@ -110,16 +110,16 @@ cp ~/Share/toy_data/SAMPLES.txt ./
 Now that you have copied the raw data to your working directory, let's do some quality control.  
 The sequencing process is subject to several types of problems that can introduce errors and artifacts in the sequences.  
 Because of this, bioinformatics analyses usually start with the quality control of raw sequences.  
-He we will use [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc) and [MultiQC](https://multiqc.info/) to obtain quality reports, and [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and [chopper](https://github.com/wdecoster/chopper) for trimming the Illumina and Nanopore data, respectively.  
+He we will use [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc) and [MultiQC](https://multiqc.info/) to obtain quality reports, and [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) for trimming the Illumina data, respectively.  
 
 ### QC of the raw data
 
-Go to your `Physalia_EnvMetagenomics_2023` folder, create a folder for the QC files, and activate the `conda` environment:  
+Go to your `Physalia_EnvMetagenomics_2024` folder, create a folder for the QC files, and activate the `conda` environment:  
 
 ```bash
 cd ~/Physalia_EnvMetagenomics_2024
 mkdir 02_QC_RAW
-conda activate QC
+conda activate envmetagenomics
 ```
 
 And now you're ready to run the QC on the raw data:
