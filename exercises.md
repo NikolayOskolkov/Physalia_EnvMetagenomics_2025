@@ -252,9 +252,8 @@ There are many different appraoches for taxonomic profiling of metagenomes, each
 Let's now try a `sourmash`:  
 
 ```bash
-conda activate sourmash-4.6.1
+conda activate envmetagenomics
 
-# Illumina data
 for sample in $(cat SAMPLES.txt); do
   sourmash sketch dna 03_TRIMMED/${sample}.illumina.R?.fastq.gz \
                       -p k=31,scaled=1000,abund \
@@ -266,16 +265,6 @@ for sample in $(cat SAMPLES.txt); do
                   -k 31 \
                   -o 05_TAXONOMIC_PROFILE/${sample}.gather.csv
 done
-
-# Nanopore data
-sourmash sketch dna 03_TRIMMED/nanopore.fastq.gz \
-                    -p k=31,scaled=1000,abund \
-                    -o 05_TAXONOMIC_PROFILE/nanopore.sig.zip
-
-sourmash gather 05_TAXONOMIC_PROFILE/nanopore.sig.zip \
-                ~/Share/Databases/gtdb-rs207.genomic-reps.dna.k31.zip \
-                -k 31 \
-                -o 05_TAXONOMIC_PROFILE/nanopore.gather.csv
 
 # Gather results
 sourmash tax metagenome -g 05_TAXONOMIC_PROFILE/*.gather.csv \
@@ -302,7 +291,7 @@ Now it's time to move forward to metagenome assembly.
 First let's create a folder where the assembly will go:  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2023
+cd ~/Physalia_EnvMetagenomics_2024
 mkdir 06_ASSEMBLY
 ```
 
