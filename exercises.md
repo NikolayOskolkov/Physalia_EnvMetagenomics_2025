@@ -78,17 +78,17 @@ To have access to the course's content, let's copy the GitHub repository to your
 
 ```bash
 cd ~
-git clone https://github.com/karkman/Physalia_EnvMetagenomics_2023
+git clone https://github.com/NikolayOskolkov/Physalia_EnvMetagenomics_2024
 ```
 
 **Do this every once in a while, at least each day before starting the activities:**  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2023
+cd ~/Physalia_EnvMetagenomics_2024
 git pull
 ```
 
-**Note:** All exercises will be executed inside the `Physalia_EnvMetagenomics_2023` folder that you cloned inside your own `home` folder.  
+**Note:** All exercises will be executed inside the `Physalia_EnvMetagenomics_2024` folder that you cloned inside your own `home` folder.  
 So remember to `cd ~/Physalia_EnvMetagenomics_2023` every time you connect to the remote machine.  
 
 ## Getting the raw data
@@ -102,7 +102,7 @@ Also copy the file `SAMPLES.txt`, which will be useful for running `for loop` an
 # export STUDY="WWTP"
 # export STUDY="Tundra"
 
-cd ~/Physalia_EnvMetagenomics_2023
+cd ~/Physalia_EnvMetagenomics_2024
 mkdir 01_DATA
 
 cp ~/Share/Data/${STUDY}/raw/*.fastq.gz 01_DATA/
@@ -121,7 +121,7 @@ He we will use [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastq
 Go to your `Physalia_EnvMetagenomics_2023` folder, create a folder for the QC files, and activate the `conda` environment:  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2023
+cd ~/Physalia_EnvMetagenomics_2024
 mkdir 02_QC_RAW
 conda activate QC
 ```
