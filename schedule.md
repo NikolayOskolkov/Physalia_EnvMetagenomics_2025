@@ -23,8 +23,6 @@
 |---------|-------------------------------|---------------------------------------------------------------------------------------------------------------|
 |Morning  |Questions from the previous day|[Flinga](https://flinga.fi/s/FFQ5876)                                                                          |
 |Morning  |QC and trimming                |[Slides](Lectures/QC-and-trimming.pdf) / [Hands-on](exercises.md#qc-and-trimming)                              |
-|Morning  |Metagenome assembly            |[Slides](Lectures/Assembly-and-QC.pdf) / [Hands-on](exercises.md#metagenome-assembly)                          |
-|Afternoon|Assembly QC                    |[Hands-on](exercises.md#assembly-qc)                                                                           |
 |Afternoon|Read-based taxonomic profiling |[Slides](Lectures/read-based-taxonomic-profiling.pdf) / [Hands-on](exercises.md#read-based-taxonomic-profiling)|
 
 ## Wednesday - 9 am -1 pm Berlin time
