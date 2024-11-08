@@ -153,15 +153,15 @@ For the Illumina data, we will use a `for loop` to process each of the samples o
 
 ```bash
 for sample in $(cat SAMPLES.txt); do
-  cutadapt 01_DATA/${sample}.illumina.R1.fastq.gz \
-           01_DATA/${sample}.illumina.R2.fastq.gz \
-           -o 03_TRIMMED/${sample}.illumina.R1.fastq.gz \
-           -p 03_TRIMMED/${sample}.illumina.R2.fastq.gz \
+  cutadapt 01_DATA/${sample}_R1.fastq.gz \
+           01_DATA/${sample}_R2.fastq.gz \
+           -o 03_TRIMMED/${sample}_R1.fastq.gz \
+           -p 03_TRIMMED/${sample}_R2.fastq.gz \
            -a CTGTCTCTTATACACATCTCCGAGCCCACGAGAC \
            -A CTGTCTCTTATACACATCTGACGCTGCCGACGA \
            -m 50 \
            -q 20 \
-           -j 4 > 03_TRIMMED/${sample}.illumina.log
+           -j 4 > 03_TRIMMED/${sample}.log
 done
 ```
 
@@ -169,7 +169,7 @@ While `Cutadapt` is running: looking at the [online manual](https://cutadapt.rea
 
 - What do the `-o`, `-p`, `-a`, `-A`, `m`, `-q`, and `-j` flags mean?  
 - How did we choose the values for `-m` and `-q`?  
-- What is the purpose of the redirection (`> 03_TRIMMED/${sample}.illumina.log`)?  
+- What is the purpose of the redirection (`> 03_TRIMMED/${sample}.log`)?  
 
 
 ### QC of the trimmed data
