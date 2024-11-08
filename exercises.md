@@ -89,24 +89,20 @@ git pull
 ```
 
 **Note:** All exercises will be executed inside the `Physalia_EnvMetagenomics_2024` folder that you cloned inside your own `home` folder.  
-So remember to `cd ~/Physalia_EnvMetagenomics_2023` every time you connect to the remote machine.  
+So remember to `cd ~/Physalia_EnvMetagenomics_2024` every time you connect to the remote machine.  
 
 ## Getting the raw data
 
-Choose which data set you would like to analyse (`Tundra` or `WWTP`).  
-In the commands below, first uncomment the study you chose (remove the `#`) and run the `export` command.  
-Then, copy the raw sequencing data to your own `01_DATA` folder.  
+Copy the raw sequencing data to your own `01_DATA` folder.  
 Also copy the file `SAMPLES.txt`, which will be useful for running `for loop` and etc.  
 
 ```bash
-# export STUDY="WWTP"
-# export STUDY="Tundra"
 
 cd ~/Physalia_EnvMetagenomics_2024
 mkdir 01_DATA
 
-cp ~/Share/Data/${STUDY}/raw/*.fastq.gz 01_DATA/
-cp ~/Share/Data/${STUDY}/SAMPLES.txt ./
+cp ~/Share/toy_data/*.fastq.gz 01_DATA/
+cp ~/Share/toy_data/SAMPLES.txt ./
 ```
 
 ## QC and trimming
@@ -148,7 +144,7 @@ Before proceeding, it is necessary to clean up/trim the raw sequences.
 Before start trimming the data, let's create a folder for the processed data and activate the `conda` environment:  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2023
+cd ~/Physalia_EnvMetagenomics_2024
 mkdir 03_TRIMMED
 conda activate QC
 ```
