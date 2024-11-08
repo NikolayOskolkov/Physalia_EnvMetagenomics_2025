@@ -218,16 +218,10 @@ And now let's run `Kraken2`:
 ```bash
 conda activate envmetagenomics
 
-singlem pipe --forward 03_TRIMMED/*.R1.fastq.gz \
-             --reverse 03_TRIMMED/*.R2.fastq.gz \
-             --otu_table 05_TAXONOMIC_PROFILE/singleM.Illumina.tsv \
-             --singlem_packages ~/Share/Databases/singlem_pkgs_r95/S2.8.ribosomal_protein_S2_rpsB.gpkg.spkg \
-             --threads 4
-
 kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE \
---paired 03_TRIMMED/sample1_ILM_R1.fastq.gz 03_TRIMMED/sample1_ILM_R2.fastq.gz \
---output 05_TAXONOMIC_PROFILE/sequences.kraken --report 05_TAXONOMIC_PROFILE/kraken.output \
---report-minimizer-data --use-names --threads 10
+	--paired 03_TRIMMED/sample1_ILM_R1.fastq.gz 03_TRIMMED/sample1_ILM_R2.fastq.gz \
+	--output 05_TAXONOMIC_PROFILE/sequences.kraken --report 05_TAXONOMIC_PROFILE/kraken.output \
+	--report-minimizer-data --use-names --threads 10
 ```
 
 Now that we have got our hands into some tables describing the abundance of the different taxa in our metagenome, it is time to make sense of the data.  
@@ -321,9 +315,6 @@ So let's copy this bigger assembly from the `Share` folder to the `Flye` output 
 We will run QC for both assemblies and compare the outputs.  
 
 ```bash
-# export STUDY="WWTP"
-# export STUDY="Tundra"
-
 cp ~/Share/Data/${STUDY}/full_assembly.fasta 06_ASSEMBLY
 ```
 
