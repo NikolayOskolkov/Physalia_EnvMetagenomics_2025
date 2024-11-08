@@ -200,37 +200,34 @@ Do the data look better now?
 ## Read-based taxonomic profiling
 
 There are many different tools and approaches for obtaining taxonomic profiles from metagenomes.  
-Here we will use two read-based tools: [singleM](https://wwood.github.io/singlem/) and [sourmash](https://sourmash.readthedocs.io/en/latest/).  
+Here we will use a popular read-based taxonomic profiler [Kraken2](https://github.com/DerrickWood/kraken2) and [sourmash](https://sourmash.readthedocs.io/en/latest/).  
 What is the basic approach that each of these tools use and how they can impact the results?  
-And how similar are taxonomic profiles obtained from Illumina and Nanopore data?  
 Well, let's find out!  
 
 First let's create a folder to store the results:  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2023
+cd ~/Physalia_EnvMetagenomics_2024
 mkdir 05_TAXONOMIC_PROFILE
 ```
 
-### singleM
+### Kraken2
 
-And now let's run `singleM`:  
+And now let's run `Kraken2`:  
 
 ```bash
-conda activate singleM
+conda activate envmetagenomics
 
-# Illumina data
 singlem pipe --forward 03_TRIMMED/*.R1.fastq.gz \
              --reverse 03_TRIMMED/*.R2.fastq.gz \
              --otu_table 05_TAXONOMIC_PROFILE/singleM.Illumina.tsv \
              --singlem_packages ~/Share/Databases/singlem_pkgs_r95/S2.8.ribosomal_protein_S2_rpsB.gpkg.spkg \
              --threads 4
 
-# Nanopore data
-singlem pipe --sequences 03_TRIMMED/nanopore.fastq.gz \
-             --otu_table 05_TAXONOMIC_PROFILE/singleM.nanopore.tsv \
-             --singlem_packages ~/Share/Databases/singlem_pkgs_r95/S2.8.ribosomal_protein_S2_rpsB.gpkg.spkg \
-             --threads 4
+kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE \
+--paired 03_TRIMMED/sample1_ILM_R1.fastq.gz 03_TRIMMED/sample1_ILM_R2.fastq.gz \
+--output 05_TAXONOMIC_PROFILE/sequences.kraken --report 05_TAXONOMIC_PROFILE/kraken.output \
+--report-minimizer-data --use-names --threads 10
 ```
 
 Now that we have got our hands into some tables describing the abundance of the different taxa in our metagenome, it is time to make sense of the data.  
