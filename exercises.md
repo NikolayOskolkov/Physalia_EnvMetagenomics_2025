@@ -146,7 +146,7 @@ Before start trimming the data, let's create a folder for the processed data and
 ```bash
 cd ~/Physalia_EnvMetagenomics_2024
 mkdir 03_TRIMMED
-conda activate QC
+conda activate envmetagenomics
 ```
 
 For the Illumina data, we will use a `for loop` to process each of the samples one after the other:  
@@ -171,11 +171,6 @@ While `Cutadapt` is running: looking at the [online manual](https://cutadapt.rea
 - How did we choose the values for `-m` and `-q`?  
 - What is the purpose of the redirection (`> 03_TRIMMED/${sample}.illumina.log`)?  
 
-And now we trim the Nanopore data:  
-
-```bash
-gunzip -c 01_DATA/nanopore.fastq.gz | chopper -q 10 -l 1000 -t 4 | gzip > 03_TRIMMED/nanopore.fastq.gz
-```
 
 ### QC of the trimmed data
 
