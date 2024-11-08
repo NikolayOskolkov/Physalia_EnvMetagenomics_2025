@@ -32,7 +32,8 @@
 |Time     |Activity|Link|
 |---------|--------|----|
 |Morning  |Questions from the previous day||
-|Morning|Read-based taxonomic profiling (cont.) |[Slides](Lectures/read-based-taxonomic-profiling.pdf) / [Hands-on](exercises.md#read-based-taxonomic-profiling)|
+|Morning  |Metagenome assembly            |[Slides](Lectures/Assembly-and-QC.pdf) / [Hands-on](exercises.md#metagenome-assembly)                          |
+|Afternoon|Assembly QC                    |[Hands-on](exercises.md#assembly-qc)                                                                           |
 |Morning|Genome-resolved metagenomics with anvi'o |[Slides](Lectures/genome-resolved-metagenomics.pdf) / [Hands-on](exercises.md#genome-resolved-metagenomics-with-anvio)|
 |Afternoon|Genome-resolved metagenomics with anvi'o (cont.) |[Slides](Lectures/genome-resolved-metagenomics.pdf) / [Hands-on](exercises.md#genome-resolved-metagenomics-with-anvio)|
 
