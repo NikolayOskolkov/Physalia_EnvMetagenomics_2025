@@ -29,25 +29,24 @@
 
 |Time     |Activity|Link|
 |---------|--------|----|
-|Morning  |Questions from the previous day||
-|Morning  |Metagenome assembly            |[Slides](Lectures/Assembly-and-QC.pdf) / [Hands-on](exercises.md#metagenome-assembly)                          |
-|Morning  |Assembly QC                    |[Hands-on](exercises.md#assembly-qc)                                                                           |
-|Afternoon|Genome-resolved metagenomics with anvi'o |[Slides](Lectures/genome-resolved-metagenomics.pdf) / [Hands-on](exercises.md#genome-resolved-metagenomics-with-anvio)|
+|Morning    |Questions from the previous day||
+|Morning    |Metagenome assembly            |[Slides](Lectures/Assembly-and-QC.pdf) / [Hands-on](exercises.md#metagenome-assembly)                          |
+|Afternoon  |Assembly QC                    |[Hands-on](exercises.md#assembly-qc)                                                                           |
 
 ## Thursday - 9 am -1 pm Berlin time
 
 |Time     |Activity|Link|
 |---------|--------|----|
-|Morning  |Questions from the previous day||
-|Morning  |Genome-resolved metagenomics with anvi'o (cont.) |[Slides](Lectures/genome-resolved-metagenomics.pdf) / [Hands-on](exercises.md#genome-resolved-metagenomics-with-anvio)|
-|Morning   | Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs) |[Hands-on](exercises.md#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags) |
+|Morning    |Questions from the previous day||
+|Morning    |Genome-resolved metagenomics with anvi'o |[Slides](Lectures/genome-resolved-metagenomics.pdf) / [Hands-on](exercises.md#genome-resolved-metagenomics-with-anvio)|
+|Afternoon  | Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs) |[Hands-on](exercises.md#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags) |
 
 
 ## Friday - 9 am -1 pm Berlin time
 
 |Time     |Activity|Link|
 |---------|--------|----|
-|Morning  |Questions from the previous day||
+|Morning   |Questions from the previous day||
 |Morning   | Automatic binning with SemiBin2| [Hands-on](exercises.md#automatic-binning-with-semibin2)|
 |Afternoon | Link to share information about your MAGs |[Flinga](https://flinga.fi/s/F6THBW8)|
 |Afternoon | Targeted functional analysis of MAGs | [Hands-on](exercises.md#targeted-functional-analysis-of-mags) |
