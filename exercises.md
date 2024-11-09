@@ -332,30 +332,28 @@ Are there differences between the taxonomic profiles obtained by the two differe
 
 ## Metagenome assembly
 
-Now it's time to move forward to metagenome assembly.  
-First let's create a folder where the assembly will go:  
+Now it's time to move forward to metagenome assembly. First let's create a folder where the assembly will go:  
 
 ```bash
 cd ~/Physalia_EnvMetagenomics_2024
 mkdir 06_ASSEMBLY
 ```
 
-For the assembly of our Nanopore data we will use [Flye](https://github.com/fenderglass/Flye).  
-`Flye` is a long-read de novo assembler that can also handle metagenomic data.  
+For the assembly we will use [Megahit](https://github.com/voutcn/megahit) which is is an ultra-fast and memory-efficient NGS assembler. 
+It is optimized for metagenomes, but also works well on generic single genome assembly (small or mammalian size) and single-cell assembly.
 
-Before you start the assembly, have a look at the [Flye manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md), especially the parts about Nanopore data and metagenome assembly.  
+Before you start the assembly, have a look at the [Megahit usage examples](https://github.com/voutcn/megahit?tab=readme-ov-file#usage), and the [Megahit publication](https://academic.oup.com/bioinformatics/article/31/10/1674/177884).  
 
 __What options do we need?__  
-We have only given the output directory in the script below; modify it as necessary and run `Flye`:  
+We have only given the output directory in the script below; modify it as necessary and run `megahit`:  
 
 ```bash 
-conda activate flye
+conda activate envmetagenomics
 
-flye \
-   --nano-raw 03_TRIMMED/nanopore.fastq.gz \
-   --meta \
-   -t 4 \  
-   --out-dir 06_ASSEMBLY
+for sample in $(cat SAMPLES.txt); do
+	megahit -r 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.fastq.gz -o megahit_output \
+		--min-contig-len 100 --prune-level 3 -t 4 --out-dir 06_ASSEMBLY
+done
 ```
 
 ### Assembly QC
