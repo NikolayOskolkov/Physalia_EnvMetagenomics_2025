@@ -253,10 +253,12 @@ And now let's run `Kraken2`:
 ```bash
 conda activate envmetagenomics
 
-kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE \
-	--paired 03_TRIMMED/sample1_ILM_R1.fastq.gz 03_TRIMMED/sample1_ILM_R2.fastq.gz \
-	--output 05_TAXONOMIC_PROFILE/sequences.kraken --report 05_TAXONOMIC_PROFILE/kraken.output \
-	--report-minimizer-data --use-names --threads 10
+for sample in $(cat SAMPLES.txt); do
+  kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE \
+	  --paired 03_TRIMMED/sample1_ILM_R1.fastq.gz 03_TRIMMED/sample1_ILM_R2.fastq.gz \
+	  --output 05_TAXONOMIC_PROFILE/sequences.kraken --report 05_TAXONOMIC_PROFILE/kraken.output \
+	  --report-minimizer-data --use-names --threads 4
+done
 ```
 
 Now that we have got our hands into some tables describing the abundance of the different taxa in our metagenome, it is time to make sense of the data.  
@@ -291,7 +293,7 @@ for sample in $(cat SAMPLES.txt); do
 
   sourmash gather 05_TAXONOMIC_PROFILE/${sample}.sig.zip \
                   ~/Share/Databases/gtdb-rs207.genomic-reps.dna.k31.zip \
-                  -k 31 \
+                  -k 31 --threshold-bp 10 \
                   -o 05_TAXONOMIC_PROFILE/${sample}.gather.csv
 done
 
