@@ -216,12 +216,18 @@ mkdir 04_HOST_REMOVAL
 
 for sample in $(cat SAMPLES.txt); do
 	bowtie2 --large-index -x ~/Share/Databases/hg38.fa.gz --end-to-end --threads 4 --very-sensitive \
-	-1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz | samtools view -bS -q 1 -h -@ 4 - > 04_HOST_REMOVAL/${sample}_aligned_to_hg38.bam
+	-1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz | samtools view -bS -h -@ 4 - \
+	> 04_HOST_REMOVAL/${sample}_aligned_to_hg38.bam
 	
-	samtools sort 04_HOST_REMOVAL/${sample}_aligned_to_hg38.bam -@ 4 > 04_HOST_REMOVAL/${sample}_aligned_to_hg38.sorted.bam
+	samtools sort 04_HOST_REMOVAL/${sample}_aligned_to_hg38.bam -@ 4 \
+	> 04_HOST_REMOVAL/${sample}_aligned_to_hg38.sorted.bam
+	
 	samtools index 04_HOST_REMOVAL/${sample}_aligned_to_hg38.sorted.bam
-	samtools view -b -f 4 04_HOST_REMOVAL/${sample}_aligned_to_hg38.sorted.bam > 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.bam
-	samtools bam2fq 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.bam | gzip > 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.fastq.gz
+	samtools view -b -f 4 04_HOST_REMOVAL/${sample}_aligned_to_hg38.sorted.bam \
+	> 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.bam
+
+	samtools bam2fq 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.bam | gzip \
+	> 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.fastq.gz
 done
 ```
 Above, we constructed a fastq-file which is free from human DNA. This was done by aligning the trimmed reads to the human reference genome and extracting unaligned reads only.
