@@ -351,7 +351,7 @@ We have only given the output directory in the script below; modify it as necess
 conda activate envmetagenomics
 
 for sample in $(cat SAMPLES.txt); do
-	megahit -r 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.fastq.gz -o megahit_output \
+	megahit -r 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.fastq.gz -o ${sample}_megahit_output \
 		--min-contig-len 100 --prune-level 3 -t 4 --out-dir 06_ASSEMBLY
 done
 ```
