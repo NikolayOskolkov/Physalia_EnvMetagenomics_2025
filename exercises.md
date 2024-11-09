@@ -248,7 +248,9 @@ mkdir 05_TAXONOMIC_PROFILE
 
 ### Kraken2
 
-And now let's run `Kraken2`:  
+And now let's run `Kraken2`. Kraken2 is a taxonomic sequence classifier that assigns taxonomic labels to DNA sequences. 
+Kraken2 examines the k-mers within a query sequence and uses the information within those k-mers to query a database. 
+That database maps k-mers to the lowest common ancestor (LCA) of all genomes known to contain a given k-mer.  
 
 ```bash
 conda activate envmetagenomics
@@ -290,7 +292,9 @@ Another popular way of visualization of your data is [Krona](https://bmcbioinfor
 ### sourmash
 
 There are many different appraoches for taxonomic profiling of metagenomes, each of them with their own up- and downsides.  
-Let's now try a `sourmash`:  
+Let's now try a `sourmash`. Sourmash is k-mer-based, similar to Kraken2, Bracken, and Centrifuge, but uses k-mers from across the entire dataset, rather than individual reads, to find best-match
+genomes. In this way, it is able to leverage longer-range information present in a dataset, though
+not across reads themselves.
 
 ```bash
 conda activate envmetagenomics
