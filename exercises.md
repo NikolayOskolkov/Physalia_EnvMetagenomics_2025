@@ -179,7 +179,7 @@ Modify the [commands used for the raw data](#qc-of-the-raw-data) to match the tr
 
 While you wait, take a look at the `Cutadapt` logs.  
 When `Cutadapt` runs, it prints lots of interesting information to the screen, which we lose once we logout of the remote machine.  
-Because we used redirection (`>`) to capture the standard output (`stdout`) of `Cutadapt`, this information is now stored in a file (`03_TRIMMED/${sample}.illumina.log`).  
+Because we used redirection (`>`) to capture the standard output (`stdout`) of `Cutadapt`, this information is now stored in a file (`03_TRIMMED/${sample}.log`).  
 Take a look at the log file for one of the samples using the program `less`:  
 
 **NOTE:** You can scroll up and down using the arrow keys on your keyboard, or move one "page" at a time using the spacebar.  
@@ -196,6 +196,35 @@ By looking at the `Cutadapt` log, can you answer:
 When `FastQC` and `MultiQC` have finished, copy the `MultiQC` report to your local machine and open it with a browser.  
 Compare this with the report obtained earlier for the raw data.  
 Do the data look better now?  
+
+
+## Bonus step: host removal
+
+Even if you work with environmental samples, it is quite likely that human DNA is also present in your sample, in this sense it is considered as contamination. 
+Therefore, to be on a safe side, it is a good practice to explicitely clean your data from it. 
+If you work with host-associated microbiome, i.e. human microbiome, this is a mandatory step, please see [here](https://retractionwatch.com/2024/06/26/all-authors-agree-to-retraction-of-nature-article-linking-microbial-dna-to-cancer/)
+what can happen if you do not properly clean your data from human DNA. Here, we demonstrate how to practically perfrom the host removal step.
+
+
+```bash
+# DO NOT RUN THIS (ALREADY DONE): download and index human reference genome
+# wget http://hgdownload.soe.ucsc.edu/goldenpath/hg38/bigZips/hg38.fa.gz
+# bowtie2-build --large-index hg38.fa.gz hg38.fa.gz --threads 20
+
+cd ~/Physalia_EnvMetagenomics_2024
+mkdir 04_HOST_REMOVAL
+
+for sample in $(cat SAMPLES.txt); do
+	bowtie2 --large-index -x ~/Share/Databases/hg38.fa.gz --end-to-end --threads 4 --very-sensitive \
+	-1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz | samtools view -bS -q 1 -h -@ 4 - > 04_HOST_REMOVAL/${sample}_aligned_to_hg38.bam
+	
+	samtools sort 04_HOST_REMOVAL/${sample}_aligned_to_hg38.bam -@ 4 > 04_HOST_REMOVAL/${sample}_aligned_to_hg38.sorted.bam
+	samtools index 04_HOST_REMOVAL/${sample}_aligned_to_hg38.sorted.bam
+	samtools view -b -f 4 04_HOST_REMOVAL/${sample}_aligned_to_hg38.sorted.bam > 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.bam
+	samtools bam2fq 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.bam | gzip > 04_HOST_REMOVAL/${sample}_unaligned_to_hg38.fastq.gz
+done
+```
+Above, we constructed a fastq-file which is free from human DNA. This was done by aligning the trimmed reads to the human reference genome and extracting unaligned reads only.
 
 ## Read-based taxonomic profiling
 
