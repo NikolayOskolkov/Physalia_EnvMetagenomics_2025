@@ -371,6 +371,44 @@ i.e. 8 is the length of the smallest contig which in the sum with larger contigs
 In the example above, N50=632bp is an "average" / "typical" or "median" contig length, and L50=3403 contigs with length greater or equal than 632bp make 50% of total assembled length.
 
 
+
+### Abundance quantification of assembled contigs
+
+Let us now align trimmed reads back to assembled contigs in order to quantify the abundance of the contigs:
+
+```bash
+bowtie2-build --large-index 06_ASSEMBLY/final.contigs.fa 06_ASSEMBLY/final.contigs.fa --threads 4
+bowtie2 --large-index -x 06_ASSEMBLY/final.contigs.fa --end-to-end --threads 4 --very-sensitive \
+-1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz | samtools view -bS -q 1 -h -@ 4 - > 07_ASSEMBLY_QC/aligned_to_assembled_contigs.bam
+samtools view 07_ASSEMBLY_QC/aligned_to_assembled_contigs.bam | cut -f3 > 07_ASSEMBLY_QC/contig_count.txt
+```
+
+Now let us order the assembled contigs by their abundance, we will use R for this purpose:
+
+
+```R
+df<-scan("07_ASSEMBLY_QC/contig_count.txt",what="character")
+head(sort(table(df),TRUE))
+write.table(sort(table(df),TRUE),file="07_ASSEMBLY_QC/abund_contigs.txt",col.names=FALSE,row.names=FALSE,quote=FALSE,sep="\t")
+```
+Finally, let us display top-abundant contigs:
+
+
+```bash
+head 07_ASSEMBLY_QC/abund_contigs.txt
+```
+
+### Taxonomic annotation of assembled contigs
+
+we will use Kraken2 for assigning taxa to assembled contigs:
+
+```bash
+kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE --threads 4 --output 07_ASSEMBLY_QC/sequences.kraken_contigs \
+--use-names --report 07_ASSEMBLY_QC/kraken.output_contigs 06_ASSEMBLY/final.contigs.fa
+```
+
+Please explore the taxonomic annotation of the assembled contigs and compare it with the read-based taxonomic profiling results.
+
 ## Genome-resolved metagenomics with anvi'o
 
 `Anvi'o` is an analysis and visualization platform for omics data.  
