@@ -256,7 +256,8 @@ conda activate envmetagenomics
 for sample in $(cat SAMPLES.txt); do
   kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE \
 	  --paired 03_TRIMMED/sample1_ILM_R1.fastq.gz 03_TRIMMED/sample1_ILM_R2.fastq.gz \
-	  --output 05_TAXONOMIC_PROFILE/${sample}_sequences.kraken --report 05_TAXONOMIC_PROFILE/${sample}_kraken.output \
+	  --output 05_TAXONOMIC_PROFILE/${sample}_sequences.kraken \
+	  --report 05_TAXONOMIC_PROFILE/${sample}_kraken.output \
 	  --report-minimizer-data --use-names --threads 4
 done
 ```
