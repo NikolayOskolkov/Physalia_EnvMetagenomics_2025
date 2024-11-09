@@ -351,27 +351,25 @@ done
 
 ### Assembly QC
 
-For the sake of speed, the metagenomic assembly you have done above was made with heavily downsampled data.  
-We have also prepared an assembly made from the original (not downsampled) data, which will be the assembly you will actually use downstream.  
-So let's copy this bigger assembly from the `Share` folder to the `Flye` output folder.  
-We will run QC for both assemblies and compare the outputs.  
-
-```bash
-cp ~/Share/Data/${STUDY}/full_assembly.fasta 06_ASSEMBLY
-```
-
-For assembly QC we will use the metagenomic version of Quality Assessment Tool for Genome Assemblies, [Quast](http://quast.sourceforge.net/) for evaluating (and comparing) our assemblies.
+Now we are going to explore the assembled contigs. First, we will run QC for the assembled contigs and compute N50 value.  
 
 ```bash
 mkdir 07_ASSEMBLY_QC
 
-conda activate quast
+conda activate envmetagenomics
 
-metaquast.py 06_ASSEMBLY/*.fasta \
-      --output-dir 07_ASSEMBLY_QC \
-      --max-ref-number 0 \
-      --threads 4
+# check assembly quality statistics with callN50 JavaScript script that requires the k8 JavaScript shell (or node) to be installed
+# wget https://raw.githubusercontent.com/lh3/calN50/master/calN50.js
+# to install k8 run
+# wget -O- https://github.com/attractivechaos/k8/releases/download/v1.2/k8-1.2.tar.bz2 | tar -jxf -
+
+~/Share/k8-1.2/./k8-x86_64-Linux ~/Share/calN50.js 06_ASSEMBLY/final.contigs.fa > 07_ASSEMBLY_QC/assemstats.txt
 ```
+
+N50 has a complex meaning. If we have contigs with length: 2,3,4,5,6,7,8,9,10 then the total assembled length is 2+3+4+5+6+7+8+9+10=54, then the largest contigs of length 10+9+8=27 make half of assembled length, therfore N50=8 and L50=3
+i.e. 8 is the length of the smallest contig which in the sum with larger contigs make 50% of total assembled length, and 3 is the number of contigs of lengths greater or equal 8 which together make 50% of assembled length
+In the example above, N50=632bp is an "average" / "typical" or "median" contig length, and L50=3403 contigs with length greater or equal than 632bp make 50% of total assembled length.
+
 
 ## Genome-resolved metagenomics with anvi'o
 
