@@ -275,8 +275,17 @@ The idea here is to:
 Hopefully you will be able to learn a bit about these metagenomic datasets.  
 And realise that there is so much that still remains unknown...  
 
-If you don't have R installed or can't install packages yourself, we have prepared a virtual Rstudio for you with example data.  
-Just click this: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/karkman/binder_rstudio/main?urlpath=rstudio)
+We recommend to use [R / Rstudio](https://posit.co/download/rstudio-desktop/) for visualization of microbial abundances in your sample. For example, one can use [Pavian](https://github.com/fbreitwieser/pavian) tool:
+
+```R
+# explore abundance in Pavian https://github.com/fbreitwieser/pavian
+if (!require(remotes)) { install.packages("remotes") }
+remotes::install_github("fbreitwieser/pavian")
+pavian::runApp(port=5000)
+```
+
+Another popular way of visualization of your data is [Krona](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-385) which can be installed and used from https://github.com/marbl/Krona.
+
 
 ### sourmash
 
