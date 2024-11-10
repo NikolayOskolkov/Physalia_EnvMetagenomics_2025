@@ -395,13 +395,16 @@ bowtie2 --large-index -x 06_ASSEMBLY/final.contigs.fa --end-to-end --threads 4 -
 samtools view 07_ASSEMBLY_QC/aligned_to_assembled_contigs.bam | cut -f3 > 07_ASSEMBLY_QC/contig_count.txt
 ```
 
+Above, we generated a bam-alignment where it is recorded to what contig each read is aligned. Then we used samtools to extract a list of contigs corresponding to each aligned read.
 Now let us order the assembled contigs by their abundance, we will use R for this purpose:
-
 
 ```R
 df<-scan("07_ASSEMBLY_QC/contig_count.txt",what="character")
+
 head(sort(table(df),TRUE))
-write.table(sort(table(df),TRUE),file="07_ASSEMBLY_QC/abund_contigs.txt",col.names=FALSE,row.names=FALSE,quote=FALSE,sep="\t")
+
+write.table(sort(table(df),TRUE),file="07_ASSEMBLY_QC/abund_contigs.txt",
+col.names=FALSE,row.names=FALSE,quote=FALSE,sep="\t")
 ```
 Finally, let us display top-abundant contigs:
 
@@ -409,6 +412,8 @@ Finally, let us display top-abundant contigs:
 ```bash
 head 07_ASSEMBLY_QC/abund_contigs.txt
 ```
+
+Can you name a few most abundant contigs?
 
 ### Taxonomic annotation of assembled contigs
 
