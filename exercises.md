@@ -107,6 +107,14 @@ cp ~/Share/toy_data/*.fastq.gz 01_DATA/
 cp ~/Share/toy_data/SAMPLES.txt ./
 ```
 
+Let us now explore the data a little bit. First of all, we can look inside the gzipped-file without unzipping with `zcat`:
+
+```bash
+zcat 01_DATA/*R1.fastq.gz | head
+```
+
+You should see 4 lines corresponding to each read.
+
 ## QC and trimming
 
 Now that you have copied the raw data to your working directory, let's do some quality control.  
