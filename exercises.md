@@ -389,7 +389,7 @@ To quantify abundance of each assembled contig, let us now align the trimmed rea
 bowtie2-build --large-index 06_ASSEMBLY/final.contigs.fa 06_ASSEMBLY/final.contigs.fa --threads 4
 
 bowtie2 --large-index -x 06_ASSEMBLY/final.contigs.fa --end-to-end --threads 4 --very-sensitive \
--1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz | samtools view -bS -q 1 -h -@ 4 - \
+-1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz | samtools view -bS -h -q 1 -@ 4 - \
 > 07_ASSEMBLY_QC/aligned_to_assembled_contigs.bam
 
 samtools view 07_ASSEMBLY_QC/aligned_to_assembled_contigs.bam | cut -f3 > 07_ASSEMBLY_QC/contig_count.txt
@@ -403,8 +403,8 @@ df<-scan("07_ASSEMBLY_QC/contig_count.txt",what="character")
 
 head(sort(table(df),TRUE))
 
-write.table(sort(table(df),TRUE),file="07_ASSEMBLY_QC/abund_contigs.txt",
-col.names=FALSE,row.names=FALSE,quote=FALSE,sep="\t")
+write.table(data.frame(sort(table(df),TRUE)),file="07_ASSEMBLY_QC/abund_contigs.txt",
+col.names=FALSE,row.names=TRUE,quote=FALSE,sep="\t")
 ```
 Finally, let us display top-abundant contigs:
 
@@ -417,7 +417,7 @@ Can you name a few most abundant contigs?
 
 ### Taxonomic annotation of assembled contigs
 
-we will use Kraken2 for assigning taxa to assembled contigs:
+Now, we will figure out what organisms with available taxonomic annotation correspond to the assembled contigs. We will use Kraken2 for assigning taxa to assembled contigs:
 
 ```bash
 kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE --threads 4 --output 07_ASSEMBLY_QC/sequences.kraken_contigs \
