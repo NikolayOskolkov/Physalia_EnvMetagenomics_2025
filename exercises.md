@@ -420,8 +420,9 @@ Can you name a few most abundant contigs?
 Now, we will figure out what organisms with available taxonomic annotation correspond to the assembled contigs. We will use Kraken2 for assigning taxa to assembled contigs:
 
 ```bash
-kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE --threads 4 --output 07_ASSEMBLY_QC/sequences.kraken_contigs \
---use-names --report 07_ASSEMBLY_QC/kraken.output_contigs 06_ASSEMBLY/final.contigs.fa
+kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE --threads 4 \
+--output 07_ASSEMBLY_QC/sequences.kraken_contigs --use-names \
+--report 07_ASSEMBLY_QC/kraken.output_contigs 06_ASSEMBLY/final.contigs.fa
 ```
 
 Please explore the taxonomic annotation of the assembled contigs and compare it with the read-based taxonomic profiling results.
