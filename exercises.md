@@ -10,7 +10,7 @@
    2. [Read trimming](#read-trimming)
    3. [QC of the trimmed data](#qc-of-the-trimmed-data)
 4. [Read-based taxonomic profiling](#read-based-taxonomic-profiling)
-   1. [singleM](#singlem)
+   1. [Kraken2](#kraken2)
    2. [sourmash](#sourmash)
 5. [Metagenome assembly](#metagenome-assembly)
    1. [Assembly QC](#assembly-qc)
@@ -358,28 +358,40 @@ mkdir 07_ASSEMBLY_QC
 
 conda activate envmetagenomics
 
-# check assembly quality statistics with callN50 JavaScript script that requires the k8 JavaScript shell (or node) to be installed
-# wget https://raw.githubusercontent.com/lh3/calN50/master/calN50.js
-# to install k8 run
+# check assembly quality statistics with callN50 JavaScript script 
+# that requires the k8 JavaScript shell (or node) to be installed
+# download callN50: wget https://raw.githubusercontent.com/lh3/calN50/master/calN50.js
+
+# if you need to install k8 please run
 # wget -O- https://github.com/attractivechaos/k8/releases/download/v1.2/k8-1.2.tar.bz2 | tar -jxf -
+# however, k8 is already installed for you in ~/Share/k8-1.2/ 
 
 ~/Share/k8-1.2/./k8-x86_64-Linux ~/Share/calN50.js 06_ASSEMBLY/final.contigs.fa > 07_ASSEMBLY_QC/assemstats.txt
 ```
 
-N50 has a complex meaning. If we have contigs with length: 2,3,4,5,6,7,8,9,10 then the total assembled length is 2+3+4+5+6+7+8+9+10=54, then the largest contigs of length 10+9+8=27 make half of assembled length, therfore N50=8 and L50=3
-i.e. 8 is the length of the smallest contig which in the sum with larger contigs make 50% of total assembled length, and 3 is the number of contigs of lengths greater or equal 8 which together make 50% of assembled length
-In the example above, N50=632bp is an "average" / "typical" or "median" contig length, and L50=3403 contigs with length greater or equal than 632bp make 50% of total assembled length.
+N50 has a complex meaning. It is some sort of "average" (or representative) contig length but not exactly.
+
+If we have contigs with length: 2,3,4,5,6,7,8,9,10 then the total assembled length is 2+3+4+5+6+7+8+9+10=54, then the largest contigs of length 10+9+8=27 make half of assembled length, therfore N50=8 and L50=3, 
+i.e. 8 is the length of the smallest contig which in the sum with larger contigs make 50% of total assembled length, and 3 is the number of contigs of lengths greater or equal 8 which together make 50% of assembled length.
+
+
+In this tutorial, you should see that we assembled 11 contigs of total length 1465 bp and N50=136 bp which is the "average" / "typical" or "median" contig length, and L50=5 contigs with length greater or equal than 136 bp make 50% of total assembled length.
 
 
 
 ### Abundance quantification of assembled contigs
 
-Let us now align trimmed reads back to assembled contigs in order to quantify the abundance of the contigs:
+Now, when we have assembled contigs, we might wonder what organisms they correspond to and how abundant these organisms are in our samples.
+
+To quantify abundance of each assembled contig, let us now align the trimmed reads back to assembled contigs. We will do it with `Bowtie2` aligner, and we will first have to build the index for the assembled contigs.
 
 ```bash
 bowtie2-build --large-index 06_ASSEMBLY/final.contigs.fa 06_ASSEMBLY/final.contigs.fa --threads 4
+
 bowtie2 --large-index -x 06_ASSEMBLY/final.contigs.fa --end-to-end --threads 4 --very-sensitive \
--1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz | samtools view -bS -q 1 -h -@ 4 - > 07_ASSEMBLY_QC/aligned_to_assembled_contigs.bam
+-1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz | samtools view -bS -q 1 -h -@ 4 - \
+> 07_ASSEMBLY_QC/aligned_to_assembled_contigs.bam
+
 samtools view 07_ASSEMBLY_QC/aligned_to_assembled_contigs.bam | cut -f3 > 07_ASSEMBLY_QC/contig_count.txt
 ```
 
