@@ -113,7 +113,17 @@ Let us now explore the data a little bit. First of all, we can look inside the g
 zcat 01_DATA/*R1.fastq.gz | head
 ```
 
-You should see 4 lines corresponding to each read.
+You should see 4 lines corresponding to each read: the first line contains the read ID (each starting with @), 
+the second line corresponds to the sequence of the read, the third line is the delimiter and the fourth line contains ASCII quality scores for eac sequenced nucleotide.
+
+Let us now count the number of reads in the fastq-files:
+
+```bash
+zcat 01_DATA/*R1.fastq.gz | grep -c @
+```
+
+How many reads do we have in the fastq-files?
+
 
 ## QC and trimming
 
