@@ -396,8 +396,6 @@ i.e. 8 is the length of the smallest contig which in the sum with larger contigs
 
 In this tutorial, you should see that we assembled 11 contigs of total length 1465 bp and N50=136 bp which is the "average" / "typical" or "median" contig length, and L50=5 contigs with length greater or equal than 136 bp make 50% of total assembled length.
 
-
-
 ### Abundance quantification of assembled contigs
 
 Now, when we have assembled contigs, we might wonder what organisms they correspond to and how abundant these organisms are in our samples.
@@ -446,20 +444,23 @@ kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE --threads 4 \
 
 Please explore the taxonomic annotation of the assembled contigs and compare it with the read-based taxonomic profiling results.
 
+
 ## Assembling long reads with Flye
+
 
 For the assembly of our Nanopore data we will use [Flye](https://github.com/fenderglass/Flye).
 `Flye` is a long-read de novo assembler that can also handle metagenomic data.
 
-Before you start the assembly, have a look at the [Flye manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md), especially the parts about Nanopore data and metagenome assembly.  
+Since the process will take several minutes, copy and paste the below and read the details whiles it is running.
 
 ```bash 
-conda activate flye
+conda activate envmetagenomics
+cp -p ~/Share/urban_soil_toy_data/ONT_preprocessed.fq.gz 01_DATA/
 
 flye \
-   --nano-raw 03_TRIMMED/nanopore.fastq.gz \
+   --nano-raw 01_DATA/ONT_preprocessed.fq.gz \
    --meta \
-   -t 4 \  
+   -t 4 \
    --out-dir 08_ASSEMBLY_ONT
 ```
 
@@ -469,49 +470,57 @@ The options we are using are
 - `-t 4`: number of threads (4 — use as many threads as you have cores)
 - `--out-dir`: the output directory
 
-In real data, this would take several hours to run (even days), so we are running it on sampled dataset (0.5% of the original) and it will still take some time.
+For more information, have a look at the [Flye manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md), especially the parts about Nanopore data and metagenome assembly.
 
+In real data, this would take several hours to run (even days), so we are running it on sampled dataset (0.5% of the original) and it will still take some time.
 
 ### Polishing the assembly with Illumina reads
 
 There are several ways to deal with hybrid data (Illumina and Nanopore).
-Here, we are demonstrating one of the possible ways: assemble Nanopore data with Flye and then polish the assembly with Illumina data.
+Here, we are demonstrating one of the possible ways: assemble Nanopore data with Flye (as we did above) and then polish the assembly with Illumina data.
 We consider this a good approach, but handling hybrid data is an evolving area and different groups might have different preferences.
 
 For this, we need to first align the Illumina reads to the Nanopore assembly and then polish the assembly with the aligned reads.
 Since we have already done this before, we will just present the code here:
 
-```
+```bash
+conda activate envmetagenomics
+
+cp -p ~/Share/urban_soil_toy_data/ILM_selected.pair.1.fq.gz 01_DATA/
+cp -p ~/Share/urban_soil_toy_data/ILM_selected.pair.2.fq.gz 01_DATA/
+
 bowtie2-build \
-    --large-index 08_ASSEMBLY/assembly.fasta 08_ASSEMBLY_ONT/assembly.fasta --threads 4
+    --large-index 08_ASSEMBLY_ONT/assembly.fasta 08_ASSEMBLY_ONT/assembly.fasta --threads 4
+
 bowtie2 \
     --large-index \
     -x 08_ASSEMBLY_ONT/assembly.fasta \
     --end-to-end --threads 4 --very-sensitive \
-    -1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz \
-    | samtools view -bS -h -@ 4 - \
-    > 08_ASSEMBLY_ONT/aligned_to_unpolished_assembly.bam
+    -1 01_DATA/ILM_selected.pair.1.fq.gz -2 01_DATA/ILM_selected.pair.2.fq.gz \
+    > 08_ASSEMBLY_ONT/aligned_to_unpolished_assembly.sam
 ```
-
-Above, we generated a bam-alignment where it is recorded to what contig each read is aligned. Then we used samtools to extract a list of contigs corresponding to each aligned read.
-Now let us order the assembled contigs by their abundance, we will use R for this purpose:
-
 Now that we have obtained a SAM file, we can use `Polypolish` to polish the assembly:
 
 ```bash
+conda activate envmetagenomics
 
 polypolish polish \
         08_ASSEMBLY_ONT/assembly.fasta \
-        08_ASSEMBLY_ONT/aligned_to_unpolished_assembly.bam \
+        08_ASSEMBLY_ONT/aligned_to_unpolished_assembly.sam \
         | gzip > 08_ASSEMBLY_ONT/polished.fasta.gz
 ```
 
-Can you name a few most abundant contigs?
+Note that polypolish **only works with** SAM files, not BAM files.
 
 Now, the new version of the assembly is in the file `08_ASSEMBLY_ONT/polished.fasta.gz`.
 Going forward, you would use this file for further analyses.
 The assembly QC could be done in the same way as for the Illumina data.
 
+
+However, we are going to use a prepared assembly for the next steps (otherwise they would produce no results), so let's copy it:
+```bash
+cp -p ~/Share/urban_soil_toy_data/polished_assembly_pre.fa 08_ASSEMBLY_ONT/
+```
 
 ## Automatic binning with SemiBin2
 
@@ -521,7 +530,6 @@ If you want learn more, there is a [there is a publication](https://academic.oup
 SemiBin2 uses self-supervised learning and has some pre-trained models, which makes the computation faster. It requires as input the results from mapping reads back to assembly (sorted and indexed bam files, which we already have) and the assembly (which we also have).
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2023
 mkdir 09_SEMIBIN
 ```
 
@@ -530,14 +538,15 @@ mkdir 09_SEMIBIN
 This is the same operation we have been doing before.
 
 ```bash
+
 bowtie2-build \
-    --large-index 09_SEMIBIN/polished_assembly_pre.fa 09_SEMIBIN/polished_assembly_pre.fa \
+    --large-index 08_ASSEMBLY_ONT/polished_assembly_pre.fa 08_ASSEMBLY_ONT/polished_assembly_pre.fa \
     --threads 4
 bowtie2 \
     --large-index \
-    -x 09_SEMIBIN/polished_assembly_pre.fa \
+    -x 08_ASSEMBLY_ONT/polished_assembly_pre.fa \
     --end-to-end --threads 4 --very-sensitive \
-    -1 03_TRIMMED/${sample}_R1.fastq.gz -2 03_TRIMMED/${sample}_R2.fastq.gz \
+    -1 01_DATA/ILM_selected.pair.1.fq.gz -2 01_DATA/ILM_selected.pair.2.fq.gz \
     | samtools view -bS -h -@ 4 - \
     | samtools sort -@ 4 - \
     > 09_SEMIBIN/aligned_to_assembly.sorted.bam
@@ -551,11 +560,13 @@ This should take a few minutes to run.
 
 Once we have (1) the assembly and (2) the sorted BAM file, we can run SemiBin2.
 
+For complex reasons, we need to switch to a different conda environment for this step (and several of the other tools in this section).
+
 ```bash
 conda activate SemiBin
 
 SemiBin2 single_easy_bin \
-        --input-fasta 09_SEMIBIN/polished_assembly_pre.fa \
+        --input-fasta 08_ASSEMBLY_ONT/polished_assembly_pre.fa \
         --input-bam 09_SEMIBIN/aligned_to_assembly.sorted.bam \
         --sequencing-type=long_read \
         -o 09_SEMIBIN/SemiBin2_out \
@@ -595,7 +606,8 @@ checkm2 predict \
       --input 09_SEMIBIN/SemiBin2_out/output_bins \
       -x fa.gz \
       --output-directory 09_SEMIBIN/CheckM2 \
-      --threads 4 
+      --database_path ~/Share/Databases/CheckM2_database/uniref100.KO.1.dmnd \
+      --threads 4
 ```
 
 Since this takes a while, let's start the process first and look at the details while it's running!
@@ -605,6 +617,7 @@ Command line break down (should be mostly self-explanatory, except `-x`):
 - `-x`: the **extension** of the bins
 - `--threads`: number of threads to use
 - `--output-directory`: where to store the outputs
+- `--database_path`: normally you would not need this
 
 CheckM2 will estimate two important metrics:
 
@@ -617,22 +630,25 @@ Often, we will want to use them to filter the outputs as well.
 
 ### GUNC
 
-_(This takes too long to run, so we will include it here, but you can run it at your leisure later)_
+_This takes too long to run, so we will include it here, but you can run it at your leisure later._
 
 Like checkM2, GUNC relies on a prebuilt database to run; and, like above, we have predownloaded it for you.
 
 ```bash
+conda activate gunc
 mkdir 09_SEMIBIN/GUNC_out
 gunc run \
     -d 09_SEMIBIN/SemiBin2_out/output_bins \
     --file_suffix .fa.gz \
-    --db_file ~/databases/GUNC/gunc_db_progenomes2.1.dmnd \
+    --db_file ~/Share/Databases/GUNC/gunc_db_progenomes2.1.dmnd \
     --out_dir 09_SEMIBIN/GUNC_out
 ```
 
 The file `09_SEMIBIN/GUNC_out/GUNC.progenomes_2.1.maxCSS_level.tsv` will contain the results.
 The most important column is `pass.GUNC` which is a boolean.
 If `False`, this is a sign that that genome is probably chimeric.
+
+You can see the outputs in `~/Share/expected_outputs/09_SEMIBIN/GUNC_out/GUNC.progenomes_2.1.maxCSS_level.tsv`
 
 ## Taxonomic annotation of metagenome-assembled genomes (MAGs)
 
@@ -642,12 +658,14 @@ For taxonomic annotation we will use Genome Taxonomy Database ([GTDB](https://gt
 
 By now, it should not surprise you that GTBD-tk uses a database that we have predownloaded, but that you'd normally be expected to download.
 
-```bash 
+```bash
 conda activate gtdbtk
 
+gunzip 09_SEMIBIN/SemiBin2_out/output_bins/*.fa.gz
+
 gtdbtk classify_wf \
-      --genome_dir 09_GENOMES \
-      --out_dir 09_GENOMES/GTDB \
+      --genome_dir 09_SEMIBIN/SemiBin2_out/output_bins \
+      --out_dir 09_SEMIBIN/GTDB \
       -x fa \
       --cpus 4 \
       --skip_ani_screen
@@ -659,10 +677,16 @@ gtdbtk classify_wf \
 2. We have used GUNC to check for chimerism (basically another form of contamination)
 3. We have used GTDB-Tk to annotate the genomes taxonomically
 
-## Targeted functional analysis of MAGs
+## Functional analysis of MAGs
 
 There are several approaches we can take to annotate our MAGs and find, for example, which kind of metabolic pathways they encode.
 At this we point, we stop doing metagenomics and start doing genomics, so in one way we have reached the end of our workshop.
+
+```bash
+mkdir -p 10_MAG_ANNOTATIONS/MAGs
+cp -pir 09_SEMIBIN/SemiBin2_out/output_bins/SemiBin_* 10_MAG_ANNOTATIONS/MAGs
+```
+
 
 ### Broad-scale annotation
 
@@ -675,11 +699,12 @@ Thus, we will illustrate how to do this with a single genome, but you can run th
 You can predict genes with Prodigal by running the following command:
 
 ```bash
-conda activate prodigal
-prodigal -i 10_MAG_ANNOTATIONS/SemiBin_0.fa \
-    -a 10_MAG_ANNOTATIONS/SemiBin2_0.prots.faa \
-    -d 10_MAG_ANNOTATIONS/SemiBin2_0.prots.fna \
-    -o 10_MAG_ANNOTATIONS/SemiBin2_0.prots.out
+conda activate envmetagenomics
+mkdir -p 10_MAG_ANNOTATIONS/Prodigal
+prodigal -i 10_MAG_ANNOTATIONS/MAGs/SemiBin_0.fa \
+    -a 10_MAG_ANNOTATIONS/Prodigal/SemiBin_0.prots.faa \
+    -d 10_MAG_ANNOTATIONS/Prodigal/SemiBin_0.prots.fna \
+    -o 10_MAG_ANNOTATIONS/Prodigal/SemiBin_0.prots.out
 ```
 
 This should be pretty fast and produce three files:
@@ -698,9 +723,10 @@ For this, we will use the [Resistance Gene Identifier (RGI)](https://card.mcmast
 
 ```bash
 conda activate rgi
+mkdir -p 10_MAG_ANNOTATIONS/RGI
 rgi main \
-    --input_sequence 10_MAG_ANNOTATIONS/SemiBin2_0.fa \
-    --output_file 10_MAG_ANNOTATIONS/SemiBin2_0.rgi \
+    --input_sequence 10_MAG_ANNOTATIONS/MAGs/SemiBin_0.fa \
+    --output_file 10_MAG_ANNOTATIONS/RGI/SemiBin_0.rgi \
     --clean
 ```
 
@@ -709,7 +735,7 @@ Most of arguments are self-explanatory, but the `--clean` flag tells `rgi` to re
 It is very important to be aware that the results of this analysis are not definitive!
 They are a starting point for further investigation.
 
-Results will be in the file `10_MAG_ANNOTATIONS/SemiBin2_0.rgi.txt` as a table.
+Results will be in the file `10_MAG_ANNOTATIONS/RGI/SemiBin2_0.rgi.txt` as a table.
 
 ### Running on all genomes
 
@@ -717,11 +743,11 @@ You can loop over all of your genomes to predict genes and annotate them with RG
 
 ```bash
 conda activate rgi
-for f in 10_MAG_ANNOTATIONS/SemiBin*.fa ; do
+for f in 10_MAG_ANNOTATIONS/MAGs/SemiBin*.fa ; do
     rgi main \
         --input_sequence ${f} \
-        --output_file ${f}_rgi
-        --clean \
+        --output_file 10_MAG_ANNOTATIONS/RGI/$(basename ${f}).rgi \
+        --clean
 done
 ```
 
@@ -729,6 +755,8 @@ This will produce a set of files with the antibiotic resistance genes for each g
 You should expect to get some hits, but—as mentioned above—these are not definitive results!
 
 ### Annotating with eggnog-mapper
+
+_This step will take too long to run, so we will include it here, but you can run it at your leisure later._
 
 Finally, we can annotate the proteins with eggNOG.
 This will give us a broad-scale annotation of the proteins, which can be used to infer the functions of the genes.
@@ -742,8 +770,9 @@ conda activate eggnog-mapper
 mkdir 10_MAG_ANNOTATIONS/SemiBin2_0.eggnog
 emapper.py \
     --itype genome \
-    -i 10_MAG_ANNOTATIONS/SemiBin_0.fa \
+    -i 10_MAG_ANNOTATIONS/MAGs/SemiBin_0.fa \
     --output_dir 10_MAG_ANNOTATIONS/SemiBin_0.emapper \
+    --data_dir ~/Share/Databases/emapper_db \
     -o SemiBin_0
 ```
 
