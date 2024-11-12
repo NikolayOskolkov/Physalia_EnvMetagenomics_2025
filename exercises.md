@@ -455,7 +455,7 @@ Since the process will take several minutes, copy and paste the below and read t
 
 ```bash 
 conda activate envmetagenomics
-cp -p ~/Share/urban_soil_toy_data/ONT_preprocessed.fq.gz 01_DATA/
+cp -p ~/Share/urban_soil_toy_long_reads/ONT_preprocessed.fq.gz 01_DATA/
 
 flye \
    --nano-raw 01_DATA/ONT_preprocessed.fq.gz \
@@ -486,8 +486,8 @@ Since we have already done this before, we will just present the code here:
 ```bash
 conda activate envmetagenomics
 
-cp -p ~/Share/urban_soil_toy_data/ILM_selected.pair.1.fq.gz 01_DATA/
-cp -p ~/Share/urban_soil_toy_data/ILM_selected.pair.2.fq.gz 01_DATA/
+cp -p ~/Share/urban_soil_toy_long_reads/ILM_selected.pair.1.fq.gz 01_DATA/
+cp -p ~/Share/urban_soil_toy_long_reads/ILM_selected.pair.2.fq.gz 01_DATA/
 
 bowtie2-build \
     --large-index 08_ASSEMBLY_ONT/assembly.fasta 08_ASSEMBLY_ONT/assembly.fasta --threads 4
@@ -519,7 +519,7 @@ The assembly QC could be done in the same way as for the Illumina data.
 
 However, we are going to use a prepared assembly for the next steps (otherwise they would produce no results), so let's copy it:
 ```bash
-cp -p ~/Share/urban_soil_toy_data/polished_assembly_pre.fa 08_ASSEMBLY_ONT/
+cp -p ~/Share/urban_soil_toy_long_reads/polished_assembly_pre.fa 08_ASSEMBLY_ONT/
 ```
 
 ## Automatic binning with SemiBin2
