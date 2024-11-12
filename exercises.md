@@ -16,10 +16,9 @@
    1. [Assembly QC](#assembly-qc)
    2. [Abundance quantification of assembled contigs](#abundance-quantification-of-assembled-contigs)
    3. [Taxonomic annotation of assembled contigs](#taxonomic-annotation-of-assembled-contigs)
-6. [Genome-resolved metagenomics with anvi'o](#genome-resolved-metagenomics-with-anvio)
-7. [Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs)](#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
-8. [Automatic binning with SemiBin2](#automatic-binning-with-semibin2)
-9. [Targeted functional analysis of MAGs](#targeted-functional-analysis-of-mags)
+6. [Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs)](#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
+7. [Automatic binning with SemiBin2](#automatic-binning-with-semibin2)
+8. [Targeted functional analysis of MAGs](#targeted-functional-analysis-of-mags)
 
 ## Setting up the cloud computing
 
@@ -403,8 +402,6 @@ i.e. 8 is the length of the smallest contig which in the sum with larger contigs
 
 In this tutorial, you should see that we assembled 11 contigs of total length 1465 bp and N50=136 bp which is the "average" / "typical" or "median" contig length, and L50=5 contigs with length greater or equal than 136 bp make 50% of total assembled length.
 
-
-
 ### Abundance quantification of assembled contigs
 
 Now, when we have assembled contigs, we might wonder what organisms they correspond to and how abundant these organisms are in our samples.
@@ -453,439 +450,338 @@ kraken2 --db ~/Share/Databases/minikraken2_v2_8GB_201904_UPDATE --threads 4 \
 
 Please explore the taxonomic annotation of the assembled contigs and compare it with the read-based taxonomic profiling results.
 
-## Genome-resolved metagenomics with anvi'o
 
-`Anvi'o` is an analysis and visualization platform for omics data.  
-We will use `anvi'o` for binning contigs into metagenome-assembled genomes (MAGs).  
-You should definitely take a look at their [website](https://anvio.org/) and maybe even join their [discord channel](https://discord.gg/C6He6mSNY4).  
-Let's start by making a new folder for `anvi'o`:  
+## Assembling long reads with Flye
 
-```bash
-cd ~/Physalia_EnvMetagenomics_2023
-mkdir 08_ANVIO
-```
 
-### Reformat the assembly file
+For the assembly of our Nanopore data we will use [Flye](https://github.com/fenderglass/Flye).
+`Flye` is a long-read de novo assembler that can also handle metagenomic data.
 
-Before creating the contigs database in `anvi'o`, we need to do some reformatting for our assmebly file.  
-The program removes contigs shorter than 1 000 bp and simplifyes the sequence names.
-
-```bash
-conda activate anvio
-
-anvi-script-reformat-fasta \
-    06_ASSEMBLY/full_assembly.fasta \
-    -o 08_ANVIO/contigs.fasta \
-    --report-file 08_ANVIO/reformat_report.txt \
-    --min-len 1000 \
-    --simplify-names
-```
-
-### Contigs database and annotations
-
-The first step in our genome-resolved metagenomics pipeline is the contruction of contigs database from our metagenomic contigs.  
-During this step `anvi'o` calls genes, calculates the nucleotide composition for each contigs and annotates the identified genes in three different steps.
-
-**Generate contigs database**
-
-```bash
-anvi-gen-contigs-database \
-    -f 08_ANVIO/contigs.fasta \
-    -o 08_ANVIO/CONTIGS.db \
-    -n FullAssembly \
-    -T 4
-```
-
-**Annotate marker genes**  
-
-These are used to estimate the completeness and redundancy of bins in `anvi'o`. 
-
-```bash
-anvi-run-hmms \
-    -c 08_ANVIO/CONTIGS.db \
-    -T 4
-```
-
-**Annotate COGs**  
-
-This adds COG annotations to gene calls. 
-
-```bash
-anvi-run-ncbi-cogs \
-    -c 08_ANVIO/CONTIGS.db \
-    -T 4
-```
-
-**Annotate single-copy core genes**  
-
-These are used for taxonomic annotations of bins. 
-
-```bash
-anvi-run-scg-taxonomy \
-    -c 08_ANVIO/CONTIGS.db \
-    -T 4
-```
-
-### Mapping Illumina reads back to assembly
-
-The differential coverage for each contig is calculated by mapping sequencing reads to the assembly.  
-We will use Bowtie2 to map the short-read Illumina data to our assembly (the anvio-reformatted version of it).
-
-```bash
-bowtie2-build --threads 4 08_ANVIO/contigs.fasta 08_ANVIO/contigs
-
-for sample in $(cat SAMPLES.txt); do
-   bowtie2 \
-        -1 03_TRIMMED/${sample}.illumina.R1.fastq.gz \
-        -2 03_TRIMMED/${sample}.illumina.R2.fastq.gz \
-        -x 08_ANVIO/contigs \
-        -S 08_ANVIO/${sample}.sam \
-        --threads 4 \
-        --no-unal
-
-   samtools view -@ 4 -F 4 -bS 08_ANVIO/${sample}.sam |\
-      samtools sort -@ 4 > 08_ANVIO/${sample}.bam
-    
-   samtools index -@ 4 08_ANVIO/${sample}.bam
-    
-   rm -f 08_ANVIO/${sample}.sam
-done 
-```
-
-### Profiling
-
-When the contigs database and all three mappings are ready, we can make the profile databases for each sample.
-
-```bash
-for sample in $(cat SAMPLES.txt); do
-   anvi-profile \
-        -i 08_ANVIO/${sample}.bam \
-        -c 08_ANVIO/CONTIGS.db \
-        -S ${sample} \
-        --min-contig-length 5000 \
-        -o 08_ANVIO/${sample}_PROFILE \
-        -T 4
-done
-```
-
-And finally merge the individual profiles
-
-```bash
-anvi-merge \
-   -o 08_ANVIO/SAMPLES-MERGED \
-   -c 08_ANVIO/CONTIGS.db \
-   --enforce-hierarchical-clustering \
-   08_ANVIO/*_PROFILE/PROFILE.db 
-```
-
-### Visualization
-
-Now we have all the files ready for anvi'o and we can visualize the results in anvi'o interactive view.
-We will go thru the first steps together.  
-
-Your port number will be 8080 + your user number (user1 == 1 == 8081).
-
-```bash
-export ANVIOPORT=
-```
-
-Then you can launch the interactive interface with the following command.
-
-```bash
-anvi-interactive \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --server-only \
-    --port-number $ANVIOPORT
-```
-
-### Metagenomic binninng
-
-After making the pre-clustering, start refining the clusters.
-
-```bash
-anvi-refine \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --server-only \
-    --port-number $ANVIOPORT \
-    --collection-name PreCluster \
-    --bin-id Bin_1
-```
-
-When all cluster have been refined a bit more, we can make a new collection from these.
-
-```bash
-anvi-rename-bins \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --collection-to-read PreCluster \
-    --collection-to-write PreBins \
-    --prefix Preliminary \
-    --report-file 08_ANVIO/PreBin_report.txt
-```
-
-And then we can make a summary of the cluster or bins we have so far.
-
-```bash
-anvi-summarize \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --collection-name PreBins \
-    --output-dir 08_ANVIO/PreBins_SUMMARY \
-    --quick-summary
-```
-
-The last step in anvi'o is to make a final collection and summarize that final collection.  
-To make the rename part universal, store the name of your most recent collection in env variable `$COLLECTION`.
-
-```bash
-export COLLECTION=YOUR_MOST_RECENT_COLLECTION
-```
-
-Then run the renaming.  
-
-```bash
-anvi-rename-bins \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --collection-to-read $COLLECTION \
-    --collection-to-write Final \
-    --prefix $USER \
-    --report-file 08_ANVIO/Final_report.txt
-```
-
-And then we can make a summary of the final bins.
-
-```bash
-anvi-summarize \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --collection-name Final \
-    --output-dir 08_ANVIO/SUMMARY_Final
-```
-
-## Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs)
-
-Now we have obtained some bins that we think could represent genomes present in our samples. Next steps are QC and taxonomic annotation of our genomes.  
-
-We will use a program called [checkM2](https://github.com/chklovski/CheckM2) to get more precise estimates of the completeness and redundancy of these genomes.  
-For taxonomic annotation we will use Genome Taxonomy Database ([GTDB](https://gtdb.ecogenomic.org/)) and a tool called [GTDB-Tk](https://ecogenomics.github.io/GTDBTk/installing/index.html#installing-gtdbtk-reference-data).
-
-But before we can do these steps, we should copy the most interesting genomes to a separate folder (to save time we only do this for few genomes)  .  
-
-First make text file called: `Final_genomes.txt` in the `08_ANVIO` folder that has the names of the bins that you want to work with.  
-
-Our file would look like this:
-
-```bash
-ubuntu_Bin_00001
-ubuntu_Bin_00002
-ubuntu_Bin_00003
-ubuntu_Bin_00004
-ubuntu_Bin_00005
-```
-
-Then we'll make a new folder for these genomes and copy the fasta files for each of these genomes there from the anvi'o summary folder (`SUMMARY_Final`).  
+Since the process will take several minutes, copy and paste the below and read the details whiles it is running.
 
 ```bash 
-mkdir 09_GENOMES
+conda activate envmetagenomics
+cp -p ~/Share/urban_soil_toy_long_reads/ONT_preprocessed.fq.gz 01_DATA/
 
-for bin in $(cat 08_ANVIO/Final_genomes.txt); do
-    cp 08_ANVIO/SUMMARY_Final/bin_by_bin/${bin}/${bin}-contigs.fa 09_GENOMES/
-done
+flye \
+   --nano-raw 01_DATA/ONT_preprocessed.fq.gz \
+   --meta \
+   -t 4 \
+   --out-dir 08_ASSEMBLY_ONT
 ```
 
-Now you should have one fasta file per genome you selected in folder `09_GENOMES`. 
+The options we are using are
+- `--nano-raw`: the input file contains Nanopore reads
+- `--meta`: metagenomic mode
+- `-t 4`: number of threads (4 — use as many threads as you have cores)
+- `--out-dir`: the output directory
+
+For more information, have a look at the [Flye manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md), especially the parts about Nanopore data and metagenome assembly.
+
+In real data, this would take several hours to run (even days), so we are running it on sampled dataset (0.5% of the original) and it will still take some time.
+
+### Polishing the assembly with Illumina reads
+
+There are several ways to deal with hybrid data (Illumina and Nanopore).
+Here, we are demonstrating one of the possible ways: assemble Nanopore data with Flye (as we did above) and then polish the assembly with Illumina data.
+We consider this a good approach, but handling hybrid data is an evolving area and different groups might have different preferences.
+
+For this, we need to first align the Illumina reads to the Nanopore assembly and then polish the assembly with the aligned reads.
+Since we have already done this before, we will just present the code here:
+
+```bash
+conda activate envmetagenomics
+
+cp -p ~/Share/urban_soil_toy_long_reads/ILM_selected.pair.1.fq.gz 01_DATA/
+cp -p ~/Share/urban_soil_toy_long_reads/ILM_selected.pair.2.fq.gz 01_DATA/
+
+bowtie2-build \
+    --large-index 08_ASSEMBLY_ONT/assembly.fasta 08_ASSEMBLY_ONT/assembly.fasta --threads 4
+
+bowtie2 \
+    --large-index \
+    -x 08_ASSEMBLY_ONT/assembly.fasta \
+    --end-to-end --threads 4 --very-sensitive \
+    -1 01_DATA/ILM_selected.pair.1.fq.gz -2 01_DATA/ILM_selected.pair.2.fq.gz \
+    > 08_ASSEMBLY_ONT/aligned_to_unpolished_assembly.sam
+```
+Now that we have obtained a SAM file, we can use `Polypolish` to polish the assembly:
+
+```bash
+conda activate envmetagenomics
+
+polypolish polish \
+        08_ASSEMBLY_ONT/assembly.fasta \
+        08_ASSEMBLY_ONT/aligned_to_unpolished_assembly.sam \
+        | gzip > 08_ASSEMBLY_ONT/polished.fasta.gz
+```
+
+Note that polypolish **only works with** SAM files, not BAM files.
+
+Now, the new version of the assembly is in the file `08_ASSEMBLY_ONT/polished.fasta.gz`.
+Going forward, you would use this file for further analyses.
+The assembly QC could be done in the same way as for the Illumina data.
+
+
+However, we are going to use a prepared assembly for the next steps (otherwise they would produce no results), so let's copy it:
+```bash
+cp -p ~/Share/urban_soil_toy_long_reads/polished_assembly_pre.fa 08_ASSEMBLY_ONT/
+```
+
+## Automatic binning with SemiBin2
+
+SemiBin2 is one of the several automatic binning algorithms published.
+If you want learn more, there is a [there is a publication](https://academic.oup.com/bioinformatics/article/39/Supplement_1/i21/7210480) (also, the [manuscript about the original SemiBin1](https://www.nature.com/articles/s41467-022-29843-y)). More practical reading can be found from the documentation: [https://semibin.readthedocs.io/en/latest/](https://semibin.readthedocs.io/en/latest/).  
+
+SemiBin2 uses self-supervised learning and has some pre-trained models, which makes the computation faster. It requires as input the results from mapping reads back to assembly (sorted and indexed bam files, which we already have) and the assembly (which we also have).
+
+```bash
+mkdir 09_SEMIBIN
+```
+
+### Mapping reads back to the assembly
+
+This is the same operation we have been doing before.
+
+```bash
+
+bowtie2-build \
+    --large-index 08_ASSEMBLY_ONT/polished_assembly_pre.fa 08_ASSEMBLY_ONT/polished_assembly_pre.fa \
+    --threads 4
+bowtie2 \
+    --large-index \
+    -x 08_ASSEMBLY_ONT/polished_assembly_pre.fa \
+    --end-to-end --threads 4 --very-sensitive \
+    -1 01_DATA/ILM_selected.pair.1.fq.gz -2 01_DATA/ILM_selected.pair.2.fq.gz \
+    | samtools view -bS -h -@ 4 - \
+    | samtools sort -@ 4 - \
+    > 09_SEMIBIN/aligned_to_assembly.sorted.bam
+```
+
+The one important step here is that we must sort the BAM file, which is done with `samtools sort`.
+
+This should take a few minutes to run.
+
+### Binning with SemiBin2
+
+Once we have (1) the assembly and (2) the sorted BAM file, we can run SemiBin2.
+
+For complex reasons, we need to switch to a different conda environment for this step (and several of the other tools in this section).
+
+```bash
+conda activate SemiBin
+
+SemiBin2 single_easy_bin \
+        --input-fasta 08_ASSEMBLY_ONT/polished_assembly_pre.fa \
+        --input-bam 09_SEMIBIN/aligned_to_assembly.sorted.bam \
+        --sequencing-type=long_read \
+        -o 09_SEMIBIN/SemiBin2_out \
+        --environment soil \
+        --threads 4
+```
+
+To break down the command above:
+
+- `--input-fasta`: the assembly file
+- `--input-bam`: the sorted BAM file
+- `--sequencing-type`: the type of sequencing data used (`long_read` in this case)
+- `-o`: the output directory
+- `--environment`: the environment type (in this case, `soil`)
+- `--threads`: the number of threads to use
+
+
+At the end of the run, you will have a set of bins in the `09_SEMIBIN/SemiBin2_out/output_bins` directory.
+This is a toy example where almost all contigs get binned.
+This is not the case in real data (but real data would take too long to run the mapping step).
+
+## Quality control of metagenome-assembled genomes (MAGs)
+
+Now we have obtained some bins that we think could represent genomes present in our samples. Next steps are QC and taxonomic annotation of our genomes.
+
+We will use a program called [checkM2](https://github.com/chklovski/CheckM2) to get more precise estimates of the completeness and redundancy of these genomes and another one, called [GUNC](https://doi.org/10.1186/s13059-021-02393-0) to get an alternative check of contamination.
 
 ### checkM2
+
+Normally, to use checkM2, you need to download the database first (by running `checkm2 database --download`).
+In this case, we have already downloaded it for you, so you can just activate the environment and run the command.
 
 ```bash
 conda activate checkm2
 
 checkm2 predict \
-      --input 09_GENOMES \
-      --output-directory 09_GENOMES/checkM2 \
-      -x fa \
-      --threads 4 
+      --input 09_SEMIBIN/SemiBin2_out/output_bins \
+      -x fa.gz \
+      --output-directory 09_SEMIBIN/CheckM2 \
+      --database_path ~/Share/Databases/CheckM2_database/uniref100.KO.1.dmnd \
+      --threads 4
 ```
+
+Since this takes a while, let's start the process first and look at the details while it's running!
+
+Command line break down (should be mostly self-explanatory, except `-x`):
+- `--input`: input **directory**
+- `-x`: the **extension** of the bins
+- `--threads`: number of threads to use
+- `--output-directory`: where to store the outputs
+- `--database_path`: normally you would not need this
+
+CheckM2 will estimate two important metrics:
+
+- `completeness`: how much of the genome is present in the MAG
+- `contamination`: how much of the MAG is not from the original genome
+
+Once everything has run, we can inspect the file `09_SEMIBIN/CheckM2/quality_report.tsv` for these results.
+
+Often, we will want to use them to filter the outputs as well.
+
+### GUNC
+
+_This takes too long to run, so we will include it here, but you can run it at your leisure later._
+
+Like checkM2, GUNC relies on a prebuilt database to run; and, like above, we have predownloaded it for you.
+
+```bash
+conda activate gunc
+mkdir 09_SEMIBIN/GUNC_out
+gunc run \
+    -d 09_SEMIBIN/SemiBin2_out/output_bins \
+    --file_suffix .fa.gz \
+    --db_file ~/Share/Databases/GUNC/gunc_db_progenomes2.1.dmnd \
+    --out_dir 09_SEMIBIN/GUNC_out
+```
+
+The file `09_SEMIBIN/GUNC_out/GUNC.progenomes_2.1.maxCSS_level.tsv` will contain the results.
+The most important column is `pass.GUNC` which is a boolean.
+If `False`, this is a sign that that genome is probably chimeric.
+
+You can see the outputs in `~/Share/expected_outputs/09_SEMIBIN/GUNC_out/GUNC.progenomes_2.1.maxCSS_level.tsv`
+
+## Taxonomic annotation of metagenome-assembled genomes (MAGs)
+
+For taxonomic annotation we will use Genome Taxonomy Database ([GTDB](https://gtdb.ecogenomic.org/)) and a tool called [GTDB-Tk](https://ecogenomics.github.io/GTDBTk/installing/index.html#installing-gtdbtk-reference-data).
 
 ### GTDB-tk
 
-```bash 
+By now, it should not surprise you that GTBD-tk uses a database that we have predownloaded, but that you'd normally be expected to download.
+
+```bash
 conda activate gtdbtk
 
+gunzip 09_SEMIBIN/SemiBin2_out/output_bins/*.fa.gz
+
 gtdbtk classify_wf \
-      --genome_dir 09_GENOMES \
-      --out_dir 09_GENOMES/GTDB \
+      --genome_dir 09_SEMIBIN/SemiBin2_out/output_bins \
+      --out_dir 09_SEMIBIN/GTDB \
       -x fa \
       --cpus 4 \
       --skip_ani_screen
 ```
 
-## Automatic binning with SemiBin2
+### Quality control recap
 
-SemiBin2 is one of the several automatic binning algorithms published. Whether is good, better than others or the worst one available, you have to judge yourself.  
-If you want learn more, there is a [pre-print available](https://www.biorxiv.org/content/10.1101/2023.01.09.523201v1.full). More practical reading can be found from the documentation: [https://semibin.readthedocs.io/en/latest/](https://semibin.readthedocs.io/en/latest/).  
+1. We have used checkM2 to estimate `completeness` and `contamination`
+2. We have used GUNC to check for chimerism (basically another form of contamination)
+3. We have used GTDB-Tk to annotate the genomes taxonomically
 
-SemiBin2 uses self-supervised learning and has some pre-trained models, which makes to computation faster. It requires as input the results from mapping reads back to assembly (sorted and indexed bam files, which we already have) and the assembly (which we also have).
+## Functional analysis of MAGs
 
-```bash
-cd ~/Physalia_EnvMetagenomics_2023
-mkdir 10_SEMIBIN
-```
-
-Depending on the data you're analysing run the right code block below.  
-
-__WWTP:__
+There are several approaches we can take to annotate our MAGs and find, for example, which kind of metabolic pathways they encode.
+At this we point, we stop doing metagenomics and start doing genomics, so in one way we have reached the end of our workshop.
 
 ```bash
-export environment=wastewater
-export sample=Sample3
+mkdir -p 10_MAG_ANNOTATIONS/MAGs
+cp -pir 09_SEMIBIN/SemiBin2_out/output_bins/SemiBin_* 10_MAG_ANNOTATIONS/MAGs
 ```
 
-__Tundra:__
-
-```bash
-export environment=soil
-export sample=m12208
-```
-
-Run SemiBin
-
-```bash
-conda activate SemiBin
-
-SemiBin single_easy_bin \
-        --input-fasta 08_ANVIO/contigs.fasta \
-        --input-bam 08_ANVIO/${sample}.bam \
-        --sequencing-type=short_read \
-        -o 10_SEMIBIN \
-        --environment $environment \
-        --threads 4
-```
-
-Prepare a file for anvi'o
-
-```bash
-cd 10_SEMIBIN
-
-for file in output_bins/*.fa; do 
-   for line in $(grep ">" $file); do 
-      file=$(basename ${file%.fa})
-      file=${file/./_}
-      echo -e $line"\t"${file}
-   done
-done |sed 's/>//g' > semibin_results.txt
-```
-
-And import the binning results to anvi'o as a new collection called `SemiBin`.
-
-```bash
-cd ~/Physalia_EnvMetagenomics_2023 
-
-anvi-import-collection \
-   -c 08_ANVIO/CONTIGS.db \
-   -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-   -C SemiBin \
-   --contigs-mode \
-   10_SEMIBIN/semibin_results.txt
-```
-
-Visualize the binning results in anvi'o. Remember to define the right port.
-
-```bash 
-conda activate anvio
-export ANVIOPORT=
-
-anvi-interactive \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --server-only \
-    --port-number $ANVIOPORT
-```
-
-And when anvi'o is running, you can load the SemiBin collection under `Bins` and `Load bins collection`.
-
-## Targeted functional analysis of MAGs
-
-There are several approaches we can take to annotate our MAGs and find, for example, which kind of metabolic pathways they encode.  
-At this we point, we stop doing metagenomics and start doing genomics, so in one way we have reached the end of our workshop.  
-Everything you do next, depends a lot on what are you trying to use metagenomics for.  
-Below we give some examples of how you can annotate in MAGs in `anvi'o`.  
 
 ### Broad-scale annotation
 
-Here we can use three databases/approaches that `anvi'o` offers us to annotate our contigs/MAGs.  
+To get a broad-scale annotation of our MAGs, we can predict genes and annotate them with a database such as [eggNOG](http://eggnog5.embl.de/) or a specific database like [CARD](https://card.mcmaster.ca/) (for antibiotic resistance genes).
 
-* [COG](https://www.ncbi.nlm.nih.gov/research/cog)  
-* [KEGG](https://www.genome.jp/kegg/kegg2.html)
-* [Pfam](http://pfam.xfam.org)
+Thus, we will illustrate how to do this with a single genome, but you can run this on all of your genomes.
 
-We have annotated our contigs using the COG database when we are preparing our files for `anvi'o`.  
-Unfortunately annotating against KEGG and Pfam would take a lot of time, so we won't do them now.  
-But below are examples on how you could do this:   
+### Predicting genes with Prodigal
+
+You can predict genes with Prodigal by running the following command:
 
 ```bash
-conda activate anvio
-
-# Annotate against COG
-anvi-run-ncbi-cogs -c 08_ANVIO/CONTIGS.db -T 4
-
-# Annotate against KEGG
-anvi-run-kegg-kofams -c 08_ANVIO/CONTIGS.db -T 4
-
-# Annotate against Pfam
-anvi-run-pfams -c 08_ANVIO/CONTIGS.db -T 4
+conda activate envmetagenomics
+mkdir -p 10_MAG_ANNOTATIONS/Prodigal
+prodigal -i 10_MAG_ANNOTATIONS/MAGs/SemiBin_0.fa \
+    -a 10_MAG_ANNOTATIONS/Prodigal/SemiBin_0.prots.faa \
+    -d 10_MAG_ANNOTATIONS/Prodigal/SemiBin_0.prots.fna \
+    -o 10_MAG_ANNOTATIONS/Prodigal/SemiBin_0.prots.out
 ```
 
-And to export the annotations we could do:  
+This should be pretty fast and produce three files:
+
+1. `SemiBin2_0.prots.faa`: the predicted protein sequences
+2. `SemiBin2_0.prots.fna`: the nucleotide sequences corresponding to the proteins
+3. `SemiBin2_0.prots.out`: contains a bit more information about the predictions
+
+In fact, almost all of the tools that we used here internally relied on Prodigal to predict genes!
+
+### Looking for antibiotic resistance genes
+
+One of the things we might be interested in is whether our genomes contain antibiotic resistance genes.
+
+For this, we will use the [Resistance Gene Identifier (RGI)](https://card.mcmaster.ca/analyze/rgi) from the CARD database.
 
 ```bash
-anvi-export-functions -c 08_ANVIO/CONTIGS.db -o 08_ANVIO/annotation.txt
+conda activate rgi
+mkdir -p 10_MAG_ANNOTATIONS/RGI
+rgi main \
+    --input_sequence 10_MAG_ANNOTATIONS/MAGs/SemiBin_0.fa \
+    --output_file 10_MAG_ANNOTATIONS/RGI/SemiBin_0.rgi \
+    --clean
 ```
 
-Or even better, we can summarise our collection again:  
+Most of arguments are self-explanatory, but the `--clean` flag tells `rgi` to remove intermediate files.
+
+It is very important to be aware that the results of this analysis are not definitive!
+They are a starting point for further investigation.
+
+Results will be in the file `10_MAG_ANNOTATIONS/RGI/SemiBin2_0.rgi.txt` as a table.
+
+### Running on all genomes
+
+You can loop over all of your genomes to predict genes and annotate them with RGI.
 
 ```bash
-anvi-summarize \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --collection-name Final \
-    --output-dir 08_ANVIO/SUMMARY_Final_with_annotation
+conda activate rgi
+for f in 10_MAG_ANNOTATIONS/MAGs/SemiBin*.fa ; do
+    rgi main \
+        --input_sequence ${f} \
+        --output_file 10_MAG_ANNOTATIONS/RGI/$(basename ${f}).rgi \
+        --clean
+done
 ```
 
-And look at the annotation for each of our individual MAGs/bins.  
+This will produce a set of files with the antibiotic resistance genes for each genome.
+You should expect to get some hits, but—as mentioned above—these are not definitive results!
 
-### Looking for specific genes with HMMs
+### Annotating with eggnog-mapper
 
-Another approach we can use in `anvi'o` is to run HMMs specifically for gene(s) of interest.  
-In this example we will search for the [mcrA](https://www.genome.jp/dbget-bin/www_bget?K00399+K00400+K00401+K00402+K03421+K03422+2.8.4.1+R04541) gene, which is the key gene for methanogenesis.  
+_This step will take too long to run, so we will include it here, but you can run it at your leisure later._
+
+Finally, we can annotate the proteins with eggNOG.
+This will give us a broad-scale annotation of the proteins, which can be used to infer the functions of the genes.
+
+As usual, this requires a database, which we have predownloaded for you.
+Otherwise, you would use the `download_eggnog_data.py` script to download the database for you (it is quite large, so make sure you have the disk space).
 
 ```bash
-conda activate anvio
+conda activate eggnog-mapper
 
-# Run HMMs
-anvi-run-hmms -c 08_ANVIO/CONTIGS.db --hmm-profile-dir ~/Share/Databases/mcrA_HMM -T 4
+mkdir 10_MAG_ANNOTATIONS/SemiBin2_0.eggnog
+emapper.py \
+    --itype genome \
+    -i 10_MAG_ANNOTATIONS/MAGs/SemiBin_0.fa \
+    --output_dir 10_MAG_ANNOTATIONS/SemiBin_0.emapper \
+    --data_dir ~/Share/Databases/emapper_db \
+    -o SemiBin_0
 ```
 
-And to export the annotation we could do:  
+This will produce wide-ranging results, which can be used to infer the functions of the genes.
+Again, these are not definitive results, but they are a starting point for further investigation.
 
-```bash
-anvi-script-get-hmm-hits-per-gene-call -c 08_ANVIO/CONTIGS.db --hmm-source mcrA_HMM -o 08_ANVIO/mcrA_HMM.txt
-```
-
-Or even better, we can summarise our collection again:  
-
-```bash
-anvi-summarize \
-    -c 08_ANVIO/CONTIGS.db \
-    -p 08_ANVIO/SAMPLES-MERGED/PROFILE.db \
-    --collection-name Final \
-    --output-dir 08_ANVIO/SUMMARY_Final_with_mcrA_hmm
-```
-
-Can you find the mcrA gene in your MAGs?  
-If you look at the `GTDB-Tk` results, can we say to which lineage the `mcrA` MAG(s) belong(s)?  
-Is this metabolic capability already known for this lineage?  
-Time to start writing the manuscript!! :)
