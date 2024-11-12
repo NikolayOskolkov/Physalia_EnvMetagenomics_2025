@@ -155,7 +155,13 @@ We will go through the report together before continuing with the pre-processing
 **NOTE:** to move files to and from local and remote machines, you can use: 
 - The command-line tool [scp](https://kb.iu.edu/d/agye)  
 - A file transfer software such as [FileZilla](https://filezilla-project.org)  
-- The `VS Code` built-in `Explorer` tool (`View -> Explorer`)  
+- The `VS Code` built-in `Explorer` tool (`View -> Explorer`) 
+
+Below we provide an example (please note that the IP address should be changed) of copying files to you local computer via `scp` command-line tool:
+
+```bash
+scp -r -i envmeta24.pem ubuntu@54.244.63.96:/home/ubuntu/Physalia_EnvMetagenomics_2024/02_QC_RAW/* .
+```
 
 ### Read trimming
 
