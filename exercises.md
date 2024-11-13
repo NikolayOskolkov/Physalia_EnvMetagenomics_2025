@@ -16,8 +16,10 @@
    1. [Assembly QC](#assembly-qc)
    2. [Abundance quantification of assembled contigs](#abundance-quantification-of-assembled-contigs)
    3. [Taxonomic annotation of assembled contigs](#taxonomic-annotation-of-assembled-contigs)
-6. [Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs)](#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
-7. [Automatic binning with SemiBin2](#automatic-binning-with-semibin2)
+7. [Assembling long reads with Flye](#assembling-long-reads-with-flye)
+   1. [Polishing the assembly with Illumina reads](#polishing-the-assembly-with-illumina-reads)
+6. [Automatic binning with SemiBin2](#automatic-binning-with-semibin2)
+7. [Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs)](#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
 8. [Targeted functional analysis of MAGs](#targeted-functional-analysis-of-mags)
 
 ## Setting up the cloud computing
