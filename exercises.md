@@ -367,6 +367,7 @@ We have only given the output directory in the script below; modify it as necess
 
 ```bash 
 cd ~/Physalia_EnvMetagenomics_2024
+mkdir 06_ASSEMBLY
 conda activate envmetagenomics
 
 for sample in $(cat SAMPLES.txt); do
