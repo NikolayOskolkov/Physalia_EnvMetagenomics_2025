@@ -16,8 +16,10 @@
    1. [Assembly QC](#assembly-qc)
    2. [Abundance quantification of assembled contigs](#abundance-quantification-of-assembled-contigs)
    3. [Taxonomic annotation of assembled contigs](#taxonomic-annotation-of-assembled-contigs)
-6. [Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs)](#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
-7. [Automatic binning with SemiBin2](#automatic-binning-with-semibin2)
+7. [Assembling long reads with Flye](#assembling-long-reads-with-flye)
+   1. [Polishing the assembly with Illumina reads](#polishing-the-assembly-with-illumina-reads)
+6. [Automatic binning with SemiBin2](#automatic-binning-with-semibin2)
+7. [Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs)](#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
 8. [Targeted functional analysis of MAGs](#targeted-functional-analysis-of-mags)
 
 ## Setting up the cloud computing
@@ -661,6 +663,8 @@ You can see the outputs in `~/Share/expected_outputs/09_SEMIBIN/GUNC_out/GUNC.pr
 For taxonomic annotation we will use Genome Taxonomy Database ([GTDB](https://gtdb.ecogenomic.org/)) and a tool called [GTDB-Tk](https://ecogenomics.github.io/GTDBTk/installing/index.html#installing-gtdbtk-reference-data).
 
 ### GTDB-tk
+
+_This takes too long (>1 hour). Again, we show the command and the results, but we will not be able to run it_
 
 By now, it should not surprise you that GTBD-tk uses a database that we have predownloaded, but that you'd normally be expected to download.
 
