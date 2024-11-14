@@ -664,6 +664,8 @@ For taxonomic annotation we will use Genome Taxonomy Database ([GTDB](https://gt
 
 ### GTDB-tk
 
+_This takes too long (>1 hour). Again, we show the command and the results, but we will not be able to run it_
+
 By now, it should not surprise you that GTBD-tk uses a database that we have predownloaded, but that you'd normally be expected to download.
 
 ```bash

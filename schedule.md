@@ -39,8 +39,8 @@
 |Time      |Activity|Link|
 |----------|--------|----|
 |Morning   |Questions from the previous day||
-|Morning   |Binning and MAG QC|[Slides](Lectures/genome-resolved-metagenomics.pdf)
-|Afternoon |Automatic binning with SemiBin2| [Hands-on](exercises.md#automatic-binning-with-semibin2)|
+|Morning   |Binning and SemiBin2|[Slides](https://2024-11-14-lpc-talk.big-data-biology.org/) /[Hands-on](exercises.md#automatic-binning-with-semibin2)|
+|Afternoon |Metagenome-assembled genome (MAG) QC |[Slides](https://docs.google.com/presentation/d/17wcSoPqXGGutMs-oaVAYJbJ3zoyAvK82Kih55evJ2Bs/edit?usp=sharing) / [Hands-on](exercises.md#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
 
 
 ## Friday - 9 am -1 pm Berlin time
