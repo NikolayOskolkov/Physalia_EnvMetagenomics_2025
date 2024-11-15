@@ -20,7 +20,7 @@
    1. [Polishing the assembly with Illumina reads](#polishing-the-assembly-with-illumina-reads)
 6. [Automatic binning with SemiBin2](#automatic-binning-with-semibin2)
 7. [Quality control and taxonomic annotation of metagenome-assembled genomes (MAGs)](#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
-8. [Targeted functional analysis of MAGs](#targeted-functional-analysis-of-mags)
+8. [Functional annotation of MAGs](#functional-annotation-of-mags)
 
 ## Setting up the cloud computing
 
@@ -687,7 +687,7 @@ gtdbtk classify_wf \
 2. We have used GUNC to check for chimerism (basically another form of contamination)
 3. We have used GTDB-Tk to annotate the genomes taxonomically
 
-## Functional analysis of MAGs
+## Functional annotation of MAGs
 
 There are several approaches we can take to annotate our MAGs and find, for example, which kind of metabolic pathways they encode.
 At this we point, we stop doing metagenomics and start doing genomics, so in one way we have reached the end of our workshop.
