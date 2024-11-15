@@ -48,5 +48,6 @@
 |Time      |Activity|Link|
 |----------|--------|----|
 |Morning   |Questions from the previous day||
-|Morning   |Gene catalogue approach|[Slides](Lectures/gene-catalogue-approach.pdf) | |Morning   |Annotation of metagenome-assembled genomes (MAGs) and using public databases |[Slides](Lectures/mag-functional-annotation.pdf) [Hands-on](exercises.md#annotation-of-mags-and-using-public-databases)|
+|Morning   |Gene catalogue approach|[Slides](Lectures/gene-catalogue-approach.pdf) | 
+|Morning   |Annotation of metagenome-assembled genomes (MAGs) and using public databases |[Slides](Lectures/mag-functional-annotation.pdf) [Hands-on](exercises.md#annotation-of-mags-and-using-public-databases)|
 |Afternoon |Open questions and discussion|||
