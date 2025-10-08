@@ -81,18 +81,18 @@ To have access to the course's content, let's copy the GitHub repository to your
 
 ```bash
 cd ~
-git clone https://github.com/NikolayOskolkov/Physalia_EnvMetagenomics_2024
+git clone https://github.com/NikolayOskolkov/Physalia_EnvMetagenomics_2025
 ```
 
 **Do this every once in a while, at least each day before starting the activities:**  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2024
+cd ~/Physalia_EnvMetagenomics_2025
 git pull
 ```
 
-**Note:** All exercises will be executed inside the `Physalia_EnvMetagenomics_2024` folder that you cloned inside your own `home` folder.  
-So remember to `cd ~/Physalia_EnvMetagenomics_2024` every time you connect to the remote machine.  
+**Note:** All exercises will be executed inside the `Physalia_EnvMetagenomics_2025` folder that you cloned inside your own `home` folder.  
+So remember to `cd ~/Physalia_EnvMetagenomics_2025` every time you connect to the remote machine.  
 
 ## Getting the raw data
 
@@ -101,7 +101,7 @@ Also copy the file `SAMPLES.txt`, which will be useful for running `for loop` an
 
 ```bash
 
-cd ~/Physalia_EnvMetagenomics_2024
+cd ~/Physalia_EnvMetagenomics_2025
 mkdir 01_DATA
 
 cp ~/Share/toy_data/*.fastq.gz 01_DATA/
@@ -135,10 +135,10 @@ He we will use [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastq
 
 ### QC of the raw data
 
-Go to your `Physalia_EnvMetagenomics_2024` folder, create a folder for the QC files, and activate the `conda` environment:  
+Go to your `Physalia_EnvMetagenomics_2025` folder, create a folder for the QC files, and activate the `conda` environment:  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2024
+cd ~/Physalia_EnvMetagenomics_2025
 mkdir 02_QC_RAW
 conda activate envmetagenomics
 ```
@@ -161,7 +161,7 @@ We will go through the report together before continuing with the pre-processing
 Below we provide an example (please note that the IP address should be changed) of copying files to you local computer via `scp` command-line tool:
 
 ```bash
-scp -r -i envmeta24.pem ubuntu@54.244.63.96:/home/ubuntu/Physalia_EnvMetagenomics_2024/02_QC_RAW/* .
+scp -r -i envmeta24.pem ubuntu@54.244.63.96:/home/ubuntu/Physalia_EnvMetagenomics_2025/02_QC_RAW/* .
 ```
 
 ### Read trimming
@@ -171,7 +171,7 @@ Before proceeding, it is necessary to clean up/trim the raw sequences.
 Before start trimming the data, let's create a folder for the processed data and activate the `conda` environment:  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2024
+cd ~/Physalia_EnvMetagenomics_2025
 mkdir 03_TRIMMED
 conda activate envmetagenomics
 ```
@@ -229,7 +229,7 @@ Do the data look better now?
 
 Even if you work with environmental samples, it is quite likely that human DNA is also present in your sample, in this sense it is considered as contamination. 
 Therefore, to be on a safe side, it is a good practice to explicitely clean your data from it. 
-If you work with host-associated microbiome, i.e. human microbiome, this is a mandatory step, please see [here](https://retractionwatch.com/2024/06/26/all-authors-agree-to-retraction-of-nature-article-linking-microbial-dna-to-cancer/)
+If you work with host-associated microbiome, i.e. human microbiome, this is a mandatory step, please see [here](https://retractionwatch.com/2025/06/26/all-authors-agree-to-retraction-of-nature-article-linking-microbial-dna-to-cancer/)
 what can happen if you do not properly clean your data from human DNA. Here, we demonstrate how to practically perfrom the host removal step.
 
 
@@ -238,7 +238,7 @@ what can happen if you do not properly clean your data from human DNA. Here, we 
 # wget http://hgdownload.soe.ucsc.edu/goldenpath/hg38/bigZips/hg38.fa.gz
 # bowtie2-build --large-index hg38.fa.gz hg38.fa.gz --threads 20
 
-cd ~/Physalia_EnvMetagenomics_2024
+cd ~/Physalia_EnvMetagenomics_2025
 mkdir 04_HOST_REMOVAL
 
 for sample in $(cat SAMPLES.txt); do
@@ -269,7 +269,7 @@ Well, let's find out!
 First let's create a folder to store the results:  
 
 ```bash
-cd ~/Physalia_EnvMetagenomics_2024
+cd ~/Physalia_EnvMetagenomics_2025
 mkdir 05_TAXONOMIC_PROFILE
 ```
 
@@ -368,7 +368,7 @@ __What options do we need?__
 We have only given the output directory in the script below; modify it as necessary and run `megahit`:  
 
 ```bash 
-cd ~/Physalia_EnvMetagenomics_2024
+cd ~/Physalia_EnvMetagenomics_2025
 conda activate envmetagenomics
 
 for sample in $(cat SAMPLES.txt); do
