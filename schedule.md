@@ -32,7 +32,7 @@
 |Morning  |Questions from the previous day||
 |Morning  |Metagenome assembly            |[Slides](Lectures/Assembly-and-QC.pdf) / [Hands-on](exercises.md#metagenome-assembly)  |
 |Afternoon|Assembly & Assembly QC         |[Hands-on](exercises.md#assembly-qc)                                                   |
-|Afternoon|Long reads & long read assembly|[Slides](https://docs.google.com/presentation/d/1F8D3QLJ1gqlWYrwO6W6zxG067QOcOF5EIHfTsTcH3G0/edit?usp=sharing) / [Hands-on](exercises.md#assembling-long-reads-with-flye)                               |
+|Afternoon|Long reads & long read assembly|[Slides](Lectures/long-reads-and-assembly.pdf) / [Hands-on](exercises.md#assembling-long-reads-with-flye)                               |
 
 ## Thursday - 9 am -1 pm Berlin time
 
