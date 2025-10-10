@@ -96,7 +96,18 @@ So remember to `cd ~/Physalia_EnvMetagenomics_2025` every time you connect to th
 
 ## Getting the raw data
 
-Copy the raw sequencing data to your own `01_DATA` folder.  
+The data we are going to use originate from a public dataset and represent stool samples from modern infants from the [DIABIMMUNE database (Three Country Cohort) from the Broad Institute](https://diabimmune.broadinstitute.org/diabimmune/three-country-cohort).
+
+You can download the raw data if you want as:
+
+```bash
+wget https://diabimmune.broadinstitute.org/diabimmune/data/16/G65860_pe_1.fastq.gz
+wget https://diabimmune.broadinstitute.org/diabimmune/data/16/G65860_pe_2.fastq.gz
+wget https://diabimmune.broadinstitute.org/diabimmune/data/16/G69146_pe_1.fastq.gz
+wget https://diabimmune.broadinstitute.org/diabimmune/data/16/G69146_pe_2.fastq.gz
+``` 
+
+However in this course the data have been already downloaded for you and placed in the "Share" folder. Copy the raw sequencing data to your own `01_DATA` folder.  
 Also copy the file `SAMPLES.txt`, which will be useful for running `for loop` and etc.  
 
 ```bash
