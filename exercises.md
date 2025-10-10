@@ -107,7 +107,7 @@ wget https://diabimmune.broadinstitute.org/diabimmune/data/16/G69146_pe_1.fastq.
 wget https://diabimmune.broadinstitute.org/diabimmune/data/16/G69146_pe_2.fastq.gz
 ``` 
 
-However in this course the data have been already downloaded for you and placed in the "Share" folder. Copy the raw sequencing data to your own `01_DATA` folder. Also copy the file `SAMPLES.txt`, which will be useful for running `for loop` and etc.  
+However in this course the data have been already downloaded for you and placed in the "Share" folder. Copy the raw sequencing data to your own `01_DATA` folder. Also copy the file `SAMPLES.txt`, which will be useful for running `for` loop on all the samples.
 
 ```bash
 
@@ -121,7 +121,7 @@ cp ~/Share/toy_data/SAMPLES.txt ./
 Let us now explore the data a little bit. First of all, we can look inside the gzipped-file without unzipping with `zcat`:
 
 ```bash
-zcat 01_DATA/*R1.fastq.gz | head
+zcat 01_DATA/G69146_R1.fastq.gz | head
 ```
 
 You should see 4 lines corresponding to each read: the first line contains the read ID (each starting with @), 
@@ -130,7 +130,7 @@ the second line corresponds to the sequence of the read, the third line is the d
 Let us now count the number of reads in the fastq-files:
 
 ```bash
-zcat 01_DATA/*R1.fastq.gz | grep -c @
+find 01_DATA -name '*R1.fastq.gz' | xargs zgrep -c @
 ```
 
 How many reads do we have in the fastq-files?
