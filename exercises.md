@@ -130,7 +130,7 @@ the second line corresponds to the sequence of the read, the third line is the d
 Let us now count the number of reads in the fastq-files:
 
 ```bash
-find 01_DATA -name '*R1.fastq.gz' | xargs zgrep -c @
+find 01_DATA -name '*R1.fastq.gz' | xargs zgrep -c ^@
 ```
 
 How many reads do we have in the fastq-files?
@@ -207,6 +207,17 @@ While `Cutadapt` is running: looking at the [online manual](https://cutadapt.rea
 - What do the `-o`, `-p`, `-a`, `-A`, `m`, `-q`, and `-j` flags mean?  
 - How did we choose the values for `-m` and `-q`?  
 - What is the purpose of the redirection (`> 03_TRIMMED/${sample}.log`)?  
+
+
+There is another handy adapter removal program `fastp`. It can merge overlapping PE reads in case you are working with degraded DNA samples, and it trimms ployG-tails by default in case your data were obtained by Illumina NextSeq or NovaSeq.
+
+
+```bash
+fastp --in1 G65860_R1.fastq.gz --in2 G65860_R2.fastq.gz --out1 G65860_R1.trimmed.fastq.gz --out2 G65860_R2.trimmed.fastq.gz -h fastp_report_G65860.html -w 20 -l 30
+fastp --in1 G69146_R1.fastq.gz --in2 G69146_R2.fastq.gz --out1 G69146_R1.trimmed.fastq.gz --out2 G69146_R2.trimmed.fastq.gz -h fastp_report_G69146.html -w 20 -l 30
+```
+
+Fastp generates an interesting report-html file, please have a llok and see whether you understand all the reported statistics.
 
 
 ### QC of the trimmed data
