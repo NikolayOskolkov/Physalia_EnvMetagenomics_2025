@@ -107,8 +107,7 @@ wget https://diabimmune.broadinstitute.org/diabimmune/data/16/G69146_pe_1.fastq.
 wget https://diabimmune.broadinstitute.org/diabimmune/data/16/G69146_pe_2.fastq.gz
 ``` 
 
-However in this course the data have been already downloaded for you and placed in the "Share" folder. Copy the raw sequencing data to your own `01_DATA` folder.  
-Also copy the file `SAMPLES.txt`, which will be useful for running `for loop` and etc.  
+However in this course the data have been already downloaded for you and placed in the "Share" folder. Copy the raw sequencing data to your own `01_DATA` folder. Also copy the file `SAMPLES.txt`, which will be useful for running `for loop` and etc.  
 
 ```bash
 
