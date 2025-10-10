@@ -213,8 +213,13 @@ There is another handy adapter removal program `fastp`. It can merge overlapping
 
 
 ```bash
-fastp --in1 G65860_R1.fastq.gz --in2 G65860_R2.fastq.gz --out1 G65860_R1.trimmed.fastq.gz --out2 G65860_R2.trimmed.fastq.gz -h fastp_report_G65860.html -w 20 -l 30
-fastp --in1 G69146_R1.fastq.gz --in2 G69146_R2.fastq.gz --out1 G69146_R1.trimmed.fastq.gz --out2 G69146_R2.trimmed.fastq.gz -h fastp_report_G69146.html -w 20 -l 30
+fastp --in1 G65860_R1.fastq.gz --in2 G65860_R2.fastq.gz \
+--out1 G65860_R1.trimmed.fastq.gz --out2 G65860_R2.trimmed.fastq.gz \
+-h fastp_report_G65860.html -w 20 -l 30
+
+fastp --in1 G69146_R1.fastq.gz --in2 G69146_R2.fastq.gz \
+--out1 G69146_R1.trimmed.fastq.gz --out2 G69146_R2.trimmed.fastq.gz \
+-h fastp_report_G69146.html -w 20 -l 30
 ```
 
 Fastp generates an interesting report-html file, please have a llok and see whether you understand all the reported statistics.
