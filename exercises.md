@@ -255,7 +255,7 @@ Do the data look better now?
 
 Even if you work with environmental samples, it is quite likely that human DNA is also present in your sample, in this sense it is considered as contamination. 
 Therefore, to be on a safe side, it is a good practice to explicitely clean your data from it. 
-If you work with host-associated microbiome, i.e. human microbiome, this is a mandatory step, please see [here](https://retractionwatch.com/2025/06/26/all-authors-agree-to-retraction-of-nature-article-linking-microbial-dna-to-cancer/)
+If you work with host-associated microbiome, i.e. human microbiome, this is a mandatory step, please see [here](https://retractionwatch.com/2024/06/26/all-authors-agree-to-retraction-of-nature-article-linking-microbial-dna-to-cancer/)
 what can happen if you do not properly clean your data from human DNA. Here, we demonstrate how to practically perfrom the host removal step.
 
 

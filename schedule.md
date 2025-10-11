@@ -32,14 +32,14 @@
 |Morning  |Questions from the previous day||
 |Morning  |Metagenome assembly            |[Slides](Lectures/Assembly-and-QC.pdf) / [Hands-on](exercises.md#metagenome-assembly)  |
 |Afternoon|Assembly & Assembly QC         |[Hands-on](exercises.md#assembly-qc)                                                   |
-|Afternoon|Long reads & long read assembly|[Slides](https://docs.google.com/presentation/d/1F8D3QLJ1gqlWYrwO6W6zxG067QOcOF5EIHfTsTcH3G0/edit?usp=sharing) / [Hands-on](exercises.md#assembling-long-reads-with-flye)                               |
+|Afternoon|Long reads & long read assembly|[Slides](Lectures/long-reads-and-assembly.pdf) / [Hands-on](exercises.md#assembling-long-reads-with-flye)                               |
 
 ## Thursday - 9 am -1 pm Berlin time
 
 |Time      |Activity|Link|
 |----------|--------|----|
 |Morning   |Questions from the previous day||
-|Morning   |Binning and SemiBin2|[Slides](Lectures/binning-with-semiBin2.pdf) /[Hands-on](exercises.md#automatic-binning-with-semibin2)|
+|Morning   |Binning and SemiBin2|[Slides](Lectures/mag-binning.pdf) /[Hands-on](exercises.md#automatic-binning-with-semibin2)|
 |Afternoon |Metagenome-assembled genome (MAG) QC |[Slides](Lectures/mag-qc-taxonomic-annotation.pdf) / [Hands-on](exercises.md#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
 
 
