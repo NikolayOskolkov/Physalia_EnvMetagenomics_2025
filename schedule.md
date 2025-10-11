@@ -39,7 +39,7 @@
 |Time      |Activity|Link|
 |----------|--------|----|
 |Morning   |Questions from the previous day||
-|Morning   |Binning and SemiBin2|[Slides](Lectures/binning-with-semiBin2.pdf) /[Hands-on](exercises.md#automatic-binning-with-semibin2)|
+|Morning   |Binning and SemiBin2|[Slides](Lectures/mag-binning.pdf) /[Hands-on](exercises.md#automatic-binning-with-semibin2)|
 |Afternoon |Metagenome-assembled genome (MAG) QC |[Slides](Lectures/mag-qc-taxonomic-annotation.pdf) / [Hands-on](exercises.md#quality-control-and-taxonomic-annotation-of-metagenome-assembled-genomes-mags)
 
 
