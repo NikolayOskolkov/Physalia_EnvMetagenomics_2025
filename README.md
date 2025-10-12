@@ -1,4 +1,4 @@
-![](physalia-logo.png)
+![](logo.jpg)
 
 # Environmental metagenomics
 
